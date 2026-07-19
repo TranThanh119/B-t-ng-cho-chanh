@@ -1,0 +1,93 @@
+/* ============================================================
+   styles/gallery.css
+   ------------------------------------------------------------
+   Gallery ảnh kiểu Apple Coverflow — thay cho slider phẳng cũ.
+   - Ảnh giữa: to nhất, rõ nhất, "nổi" lên trên (translateZ dương).
+   - Ảnh hai bên: nhỏ hơn, xoay 3D nhẹ, blur/tối dần theo khoảng cách.
+   - Hover: ảnh nổi lên, shadow sâu hơn, glow vàng nhẹ.
+   - Toàn bộ transform/blur/brightness của layout coverflow do
+     components/CoverflowGallery.js tính toán mỗi frame; phần
+     hover (.cf-photo:hover) là CSS transition thuần, độc lập,
+     nên không đụng tới các section khác của trang.
+   ============================================================ */
+
+#scene-carousel{ width:100%; }
+
+.cf-track{
+  position:relative;
+  width:min(760px, 92vw);
+  height:min(440px, 55vh);
+  margin:0 auto;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  touch-action: none;           /* để component tự xử lý kéo ngang, kể cả trên mobile */
+  -webkit-user-select:none; user-select:none;
+  cursor: grab;
+}
+.cf-track:active{ cursor: grabbing; }
+
+.cf-slide{
+  position:absolute;
+  top:50%; left:50%;
+  width:min(280px, 60vw);
+  height:100%;
+  transform-style:preserve-3d;
+  will-change: transform, filter, opacity;
+}
+
+.cf-photo{
+  position:relative;
+  width:100%; height:100%;
+  border-radius:16px; overflow:hidden;
+  background:#241a2c center/cover no-repeat;
+  border:1px solid var(--line);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(216,180,120,.08);
+  display:flex; align-items:flex-end; justify-content:center;
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease;
+}
+
+/* Ảnh trung tâm: bóng sâu hơn một chút để có cảm giác "nổi" lên hẳn phía trước */
+.cf-slide.cf-center .cf-photo{
+  box-shadow: 0 30px 74px rgba(0,0,0,.6), 0 0 0 1px rgba(216,180,120,.16);
+}
+
+/* Hover: nổi lên + shadow sâu hơn + glow nhẹ (áp dụng cho mọi ảnh, kể cả ảnh hai bên) */
+.cf-photo:hover{
+  transform: translateY(-10px) scale(1.035);
+  box-shadow:
+    0 36px 84px rgba(0,0,0,.64),
+    0 0 36px rgba(216,180,120,.34),
+    0 0 0 1px rgba(216,180,120,.26);
+}
+
+.cf-photo .placeholder-icon{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  opacity:.35;
+}
+
+.cf-caption{
+  position:relative; width:100%; padding:14px 10px 16px;
+  background:linear-gradient(to top, rgba(0,0,0,.75), transparent);
+  font-family:'Caveat'; font-size:20px; color:var(--gold-soft);
+  pointer-events:none;
+}
+
+@media (max-width: 560px){
+  .cf-track{ height:min(380px, 50vh); }
+  .cf-slide{ width:min(220px, 64vw); }
+}
+
+/* ---- Điều khiển bên dưới gallery: nút prev/next + dots ---- */
+.carousel-nav{ display:flex; align-items:center; gap:28px; margin-top:26px; }
+.nav-btn{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--line);
+  background:transparent; color:var(--gold-soft); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  transition: background .3s, transform .2s;
+}
+.nav-btn:hover{ background:rgba(216,180,120,.12); transform:scale(1.08); }
+.nav-btn:active{ transform:scale(.94); }
+.dots{ display:flex; gap:7px; }
+.dot{ width:6px; height:6px; border-radius:50%; background:var(--line); transition:.3s; }
+.dot.on{ background:var(--gold); width:16px; border-radius:4px; }
+

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gửi em, một điều bất ngờ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="gallery.css">
+<style>
+  /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
+  .hand-control-toggle{
+    position:fixed; top:66px; right:20px; z-index:6;
+    display:flex; align-items:center; gap:8px;
+    height:38px; padding:0 14px 0 10px; border-radius:19px;
+    border:1px solid var(--line, rgba(216,180,120,0.25));
+    background:rgba(20,14,24,.5); backdrop-filter:blur(6px);
+    color:var(--gold-soft, #e8d4a8); font-family:'Jost', sans-serif; font-size:12.5px;
+    cursor:pointer; transition:.3s; white-space:nowrap;
+  }
+  .hand-control-toggle:hover{ background:rgba(216,180,120,.14); }
+  .hand-control-toggle svg{ width:17px; height:17px; flex:none; }
+  .hand-control-toggle.active{ border-color:var(--gold, #d8b478); color:var(--cream, #f3e9dc); }
+  .hand-control-toggle.pending{ opacity:.6; cursor:wait; }
+  @media (max-width:520px){
+    .hand-control-toggle{ top:60px; right:14px; height:32px; font-size:11px; padding:0 10px 0 8px; }
+    .hand-control-toggle .hand-control-label{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <filter id="grainFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"/>
+  </filter>
+</svg>
+<div class="bg-glow" id="bgGlow"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+<div class="bokeh" id="bokeh"></div>
+<div class="stars" id="stars"></div>
+<div class="particles" id="particles"></div>
+
+<button class="back-toggle" id="backBtn" aria-label="Quay lại" title="Quay lại">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<button class="sound-toggle" id="soundToggle" aria-label="Bật/tắt âm thanh" title="Âm thanh">
+  <svg id="soundIconOn" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+  <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+</button>
+
+<!-- Nút bật/tắt điều khiển bằng cử chỉ tay (MediaPipe Hands) -->
+<button class="hand-control-toggle" id="handControlToggle" aria-label="Bật điều khiển bằng tay" title="Điều khiển bằng tay">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M8 12.5V6.5a1.5 1.5 0 013 0V11M11 11V5a1.5 1.5 0 013 0v6M14 11.2V6.7a1.5 1.5 0 013 0V13c0 3.6-2.4 6.5-6 6.5-2.2 0-3.6-.8-4.8-2.4L3.6 13.8c-.5-.7-.3-1.6.4-2 .6-.4 1.4-.3 1.9.3L8 14.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span class="hand-control-label">Bật điều khiển bằng tay</span>
+</button>
+
+<div class="stage">
+
+  <!-- SCENE 1: Lock -->
+  <section class="scene active" id="scene-lock">
+    <div class="eyebrow">Dành riêng cho em</div>
+    <div class="seal" id="sealBtn">
+      <svg class="seal-ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="57" fill="none" stroke="var(--gold-soft)" stroke-width="1" opacity="0.5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.1 2.3 4.5 6 4.5c2 0 3.6 1.2 4.6 2.7C11.6 5.7 13.2 4.5 15.2 4.5c3.7 0 5.5 3.6 4 7.3C19.5 16.4 12 21 12 21z" fill="var(--cream)" opacity="0.9"/></svg>
+      <div class="seal-crack" id="sealCrack"></div>
+    </div>
+    <h1>Có một điều muốn gửi em…</h1>
+    <p>chạm vào con dấu để mở ra nhé</p>
+    <div class="tap-hint">◆ CHẠM ĐỂ MỞ ◆</div>
+  </section>
+
+  <!-- SCENE 2: Intro typewriter -->
+  <section class="scene" id="scene-intro">
+    <div class="eyebrow">Lời mở đầu</div>
+    <div class="typewriter" id="typewriter"><span class="cursor">&nbsp;</span></div>
+    <button class="next-btn" id="btn-2">tiếp theo →</button>
+  </section>
+
+  <!-- SCENE 3: Carousel -->
+  <section class="scene" id="scene-carousel">
+    <div class="eyebrow">Những khoảnh khắc</div>
+    <div class="carousel" id="carousel"></div>
+    <div class="carousel-nav">
+      <button class="nav-btn" id="prevBtn">‹</button>
+      <div class="dots" id="dots"></div>
+      <button class="nav-btn" id="nextBtn">›</button>
+    </div>
+    <button class="next-btn ready" id="btn-3">tiếp theo →</button>
+  </section>
+
+  <!-- SCENE 4: Memory grid -->
+  <section class="scene" id="scene-grid">
+    <div class="eyebrow">Album nhỏ của hai ta</div>
+    <div class="grid-wrap">
+      <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+    <button class="next-btn ready" id="btn-4">tiếp theo →</button>
+  </section>
+
+  <!-- SCENE 5: Letter -->
+  <section class="scene" id="scene-letter">
+    <div class="eyebrow">Một lá thư nhỏ</div>
+    <div class="letter-card">
+      <div id="letter-body"></div>
+      <div class="letter-sign" id="letter-sign"></div>
+    </div>
+    <button class="next-btn ready" id="btn-5">mở tiếp →</button>
+  </section>
+
+  <!-- SCENE 6: Finale -->
+  <section class="scene" id="scene-finale">
+    <div class="hearts-fall" id="heartsFall"></div>
+    <div class="eyebrow">Sau tất cả</div>
+    <h2 id="finaleTitle"></h2>
+    <p id="finaleText"></p>
+    <button class="replay" id="replayBtn">xem lại từ đầu</button>
+  </section>
+
+</div>
+
+<!-- Lightbox xem ảnh lớn -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-img" id="lightboxImg"></div>
+</div>
+
+<div class="progress" id="progress"></div>
+
+<!-- config.js: nơi bạn sửa tên, lời nhắn, ảnh -->
+<script src="config.js"></script>
+<!-- GSAP: engine chuyển cảnh cinematic. Nếu CDN lỗi/offline, animations/pageTransition.js sẽ tự rơi về Web Animations API -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<!-- animations/pageTransition.js: hiệu ứng chuyển section (fade + blur + scale, cảm giác lia máy quay) -->
+<script src="animations/pageTransition.js"></script>
+<!-- components/CoverflowGallery.js: gallery ảnh kiểu Apple Coverflow -->
+<script src="CoverflowGallery.js"></script>
+<!-- script.js: phần vận hành, không cần sửa -->
+<script src="script.js"></script>
+<!-- animation/background.js: chuyển động nền cinematic (bokeh chiều sâu, particles, parallax, glow). Tắt bằng cách đổi BG_ANIM_CONFIG.enabled = false trong file này -->
+<script src="animation/background.js"></script>
+
+<!-- components/CameraPreview.js: chỉ hiển thị khung webcam nhỏ góc phải dưới -->
+<script src="components/CameraPreview.js"></script>
+<!-- gestures/gestureDetector.js: khởi tạo MediaPipe Hands + nhận diện gesture thô -->
+<script src="gestures/gestureDetector.js"></script>
+<!-- gestures/handControl.js: quản lý trạng thái camera + debounce gesture (giữ 600ms, cooldown 1500ms) -->
+<script src="gestures/handControl.js"></script>
+<script>
+/* ============================================================
+   Wiring: nối "Bật điều khiển bằng tay" với website hiện có.
+   Đoạn này CHỈ map gesture đã xác nhận -> mô phỏng click/phím
+   trên các nút/phím tắt vốn đã tồn tại (script.js), không đụng
+   hay lặp lại logic điều hướng của website.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var toggleBtn = document.getElementById('handControlToggle');
+  var labelEl = toggleBtn.querySelector('.hand-control-label');
+  var handControl = null;
+
+  function setLabel(text) { labelEl.textContent = text; }
+
+  function simulateKey(key) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: key, bubbles: true }));
+  }
+
+  // Xòe bàn tay + vuốt phải = section kế tiếp | Xòe bàn tay + vuốt trái = section trước
+  // Nắm tay lại = xác nhận / mở thư đang chọn | Dấu OK = bật/tắt nhạc nền
+  function handleGestureConfirmed(gesture) {
+    switch (gesture) {
+      case 'swipe-right': // currentIndex + 1
+        simulateKey('ArrowRight');
+        break;
+      case 'swipe-left': // currentIndex - 1
+        simulateKey('ArrowLeft');
+        break;
+      case 'fist': // xác nhận / mở thư đang chọn
+        simulateKey('Enter');
+        break;
+      case 'ok': // bật/tắt nhạc nền
+        soundToggle.click();
+        break;
+    }
+  }
+
+  function handleStateChange(state) {
+    switch (state) {
+      case 'starting':
+        toggleBtn.classList.add('pending');
+        setLabel('Đang mở camera…');
+        break;
+      case 'active':
+        toggleBtn.classList.remove('pending');
+        toggleBtn.classList.add('active');
+        setLabel('Tắt điều khiển bằng tay');
+        window.CameraPreview && window.CameraPreview.show();
+        break;
+      case 'denied':
+        toggleBtn.classList.remove('pending', 'active');
+        setLabel('Bật điều khiển bằng tay');
+        window.CameraPreview && window.CameraPreview.hide();
+        // Không chặn hay báo lỗi gây gián đoạn — website vẫn hoạt động bình thường.
+        setLabel('Camera bị từ chối quyền truy cập');
+        setTimeout(function () { setLabel('Bật điều khiển bằng tay'); }, 2600);
+        break;
+      case 'error':
+        toggleBtn.classList.remove('pending', 'active');
+        setLabel('Bật điều khiển bằng tay');
+        window.CameraPreview && window.CameraPreview.hide();
+        break;
+      case 'stopped':
+        toggleBtn.classList.remove('pending', 'active');
+        setLabel('Bật điều khiển bằng tay');
+        window.CameraPreview && window.CameraPreview.hide();
+        break;
+    }
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    if (!handControl) {
+      handControl = new HandControl({
+        onGestureConfirmed: handleGestureConfirmed,
+        onStateChange: handleStateChange,
+        onError: function (err) {
+          // Ghi log để dev debug, không làm gián đoạn trải nghiệm người dùng.
+          console.warn('[handControl] lỗi:', err && err.message ? err.message : err);
+        }
+      });
+    }
+
+    if (handControl.isActive()) {
+      handControl.disable();
+      return;
+    }
+
+    var videoEl = CameraPreview.create({ label: 'Điều khiển tay' });
+    handControl.enable(videoEl);
+  });
+})();
+</script>
+</body>
+</html>
