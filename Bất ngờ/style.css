@@ -114,8 +114,10 @@ body{
   padding: 8vh 6vw;
   opacity:0; visibility:hidden; pointer-events:none;
   text-align:center;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
   /* transform/filter khi chuyển cảnh do animations/pageTransition.js điều khiển (GSAP/WAAPI) */
 }
+.scene::-webkit-scrollbar{ width:0; height:0; }
 .scene.active{ opacity:1; visibility:visible; pointer-events:auto; }
 
 .eyebrow{
@@ -287,6 +289,31 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; }
   .sound-toggle{ top:calc(14px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); width:34px; height:34px; }
   .scene{ padding: 6vh 6vw; }
 }
+
+/* Màn hình thấp (điện thoại nằm ngang, laptop cửa sổ nhỏ): căn nội dung từ trên
+   xuống + đệm trên/dưới đủ để không bị kẹt phần đầu khi cuộn */
+@media (max-height:560px){
+  .scene{ justify-content:flex-start; padding-top:max(4vh, 14px); padding-bottom:24px; }
+  #scene-lock .seal{ width:84px; height:84px; margin-bottom:20px; }
+  #scene-lock h1{ font-size:clamp(22px,4vw,32px); }
+  #scene-lock .tap-hint{ margin-top:22px; }
+  #scene-intro .typewriter{ min-height:0; }
+  .letter-card{ padding:26px 22px; }
+  .next-btn{ margin-top:20px; }
+  .cf-track{ height:min(280px,42vh); }
+}
+
+/* Màn hình rất lớn (27 inch trở lên): nới nhẹ kích thước tối đa để không bị
+   nhỏ/lọt thỏm giữa màn hình, vẫn giữ bố cục căn giữa */
+@media (min-width:1600px){
+  #scene-lock h1{ font-size:clamp(32px,3vw,52px); }
+  #scene-intro .typewriter{ font-size:clamp(24px,2.4vw,38px); max-width:820px; }
+  .grid-wrap{ max-width:760px; }
+  .letter-card{ max-width:640px; }
+  .cf-track{ width:min(880px,60vw); height:min(500px,55vh); }
+  .cf-slide{ width:min(320px,26vw); }
+}
+
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.2s !important; }
 }

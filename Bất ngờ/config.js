@@ -33,7 +33,7 @@ Mong rằng trang nhỏ này khiến ${NAME_B} vui lên,
 dẫu có sao thì tớ luôn ở đây đồng hành cùng ${NAME_B}, và tớ nhớ cậu nhiều.`;
 
 // 4) MÀN KẾT
-const FINALE_TITLE = `${NAME_A} & ${NAME_B}`;
+const FINALE_TITLE = `Thành & ${NAME_B}`;
 const FINALE_TEXT = "cảm ơn vì đã luôn là điều bất ngờ dịu dàng nhất trong cuộc sống của tớ. 心から愛していました";
 
 /* ============================================================
@@ -44,7 +44,7 @@ const FINALE_TEXT = "cảm ơn vì đã luôn là điều bất ngờ dịu dàn
      bỏ ảnh vào đó, rồi ghi url: "photos/ten-anh.jpg"
    ============================================================ */
 const CAROUSEL_PHOTOS = [
-  { url: "photos/Chanh-asuka.jpg", caption: "Bức ảnh tớ ấn tượng" },
+  { url: "photos/Chanh-asuka.jpg", caption: "Bức ảnh đầu tiên" },
   { url: "photos/Ganyuu.jpg", caption: "Waifu " },
   { url: "photos/Chanh.jpg", caption: "Ava" },
   { url: "photos/Mocchau.jpg", caption: "Ấm áp" },
