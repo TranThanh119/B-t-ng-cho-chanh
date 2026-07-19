@@ -125,6 +125,7 @@ document.getElementById('sealBtn').addEventListener('click', function(){
   const seal = this;
   if(seal.classList.contains('cracking')) return; // chặn spam click
   ensureAudio();
+  if(soundOn) playBgMusic();
   seal.classList.add('cracking');
   chime(300, 0.35, 0.05);
   setTimeout(()=> goTo(1), 320);
