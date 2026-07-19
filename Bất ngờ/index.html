@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Gửi em, một điều bất ngờ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
 <style>
   /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
   .hand-control-toggle{
-    position:fixed; top:66px; right:20px; z-index:6;
+    position:fixed; top:calc(66px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
     display:flex; align-items:center; gap:8px;
     height:38px; padding:0 14px 0 10px; border-radius:19px;
     border:1px solid var(--line, rgba(216,180,120,0.25));
@@ -24,7 +24,7 @@
   .hand-control-toggle.active{ border-color:var(--gold, #d8b478); color:var(--cream, #f3e9dc); }
   .hand-control-toggle.pending{ opacity:.6; cursor:wait; }
   @media (max-width:520px){
-    .hand-control-toggle{ top:60px; right:14px; height:32px; font-size:11px; padding:0 10px 0 8px; }
+    .hand-control-toggle{ top:calc(60px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); height:32px; font-size:11px; padding:0 10px 0 8px; }
     .hand-control-toggle .hand-control-label{ display:none; }
   }
 </style>

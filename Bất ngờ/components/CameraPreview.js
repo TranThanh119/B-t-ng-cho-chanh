@@ -18,7 +18,7 @@
     style.id = STYLE_ID;
     style.textContent = [
       '#' + DEFAULT_ID + '{',
-      '  position:fixed; right:16px; bottom:16px; z-index:9999;',
+      '  position:fixed; right:calc(16px + env(safe-area-inset-right)); bottom:calc(16px + env(safe-area-inset-bottom)); z-index:9999;',
       '  width:160px; height:120px; border-radius:12px; overflow:hidden;',
       '  border:1px solid rgba(216,180,120,0.35); background:#000;',
       '  box-shadow:0 8px 24px rgba(0,0,0,0.45);',
@@ -36,7 +36,7 @@
       '  pointer-events:none;',
       '}',
       '@media (max-width:520px){',
-      '  #' + DEFAULT_ID + '{ width:110px; height:84px; right:10px; bottom:10px; }',
+      '  #' + DEFAULT_ID + '{ width:110px; height:84px; right:calc(10px + env(safe-area-inset-right)); bottom:calc(10px + env(safe-area-inset-bottom)); }',
       '}'
     ].join('\n');
     document.head.appendChild(style);
