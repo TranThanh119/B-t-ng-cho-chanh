@@ -48,10 +48,15 @@
   <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 
-<button class="sound-toggle" id="soundToggle" aria-label="Bật/tắt âm thanh" title="Âm thanh">
-  <svg id="soundIconOn" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-  <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-</button>
+<div class="sound-control" id="soundControl">
+  <div class="volume-pop" id="volumePop">
+    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="35" aria-label="Âm lượng nhạc nền">
+  </div>
+  <button class="sound-toggle" id="soundToggle" aria-label="Bật/tắt âm thanh" title="Âm thanh">
+    <svg id="soundIconOn" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+  </button>
+</div>
 
 <!-- Nút bật/tắt điều khiển bằng cử chỉ tay (MediaPipe Hands) -->
 <button class="hand-control-toggle" id="handControlToggle" aria-label="Bật điều khiển bằng tay" title="Điều khiển bằng tay">

@@ -62,11 +62,14 @@ function chimeTap(){ chime(520, 0.3, 0.04); }
 
 // ---- Nhạc nền (file riêng, xem BG_MUSIC_URL trong config.js) ----
 let bgMusic = null;
+const savedVolume = parseFloat(localStorage.getItem('bgMusicVolume'));
+let currentVolume = !isNaN(savedVolume) ? savedVolume
+  : (typeof BG_MUSIC_VOLUME === 'number' ? BG_MUSIC_VOLUME : 0.35);
 function ensureBgMusic(){
   if(bgMusic || !BG_MUSIC_URL) return;
   bgMusic = new Audio(BG_MUSIC_URL);
   bgMusic.loop = true;
-  bgMusic.volume = typeof BG_MUSIC_VOLUME === 'number' ? BG_MUSIC_VOLUME : 0.35;
+  bgMusic.volume = currentVolume;
 }
 function playBgMusic(){
   ensureBgMusic();
@@ -87,6 +90,34 @@ soundToggle.addEventListener('click', ()=>{
   if(soundOn){ chimeTap(); playBgMusic(); }
   else { pauseBgMusic(); }
 });
+
+// ---- Thanh trượt âm lượng nhạc nền ----
+const volumePop = document.getElementById('volumePop');
+const volumeSlider = document.getElementById('volumeSlider');
+volumeSlider.value = Math.round(currentVolume * 100);
+let volumeHideTimer = null;
+
+function showVolumePop(){
+  volumePop.classList.add('show');
+  clearTimeout(volumeHideTimer);
+  volumeHideTimer = setTimeout(()=> volumePop.classList.remove('show'), 3000);
+}
+soundToggle.addEventListener('click', showVolumePop);
+
+volumeSlider.addEventListener('pointerdown', ()=> clearTimeout(volumeHideTimer));
+volumeSlider.addEventListener('input', (e)=>{
+  const v = Number(e.target.value) / 100;
+  currentVolume = v;
+  if(bgMusic) bgMusic.volume = v;
+  localStorage.setItem('bgMusicVolume', String(v));
+  if(v > 0 && !soundOn){ soundOn = true; iconOn.style.display=''; iconOff.style.display='none'; playBgMusic(); }
+  if(v === 0 && soundOn){ soundOn = false; iconOn.style.display='none'; iconOff.style.display=''; pauseBgMusic(); }
+});
+volumeSlider.addEventListener('pointerup', ()=>{
+  clearTimeout(volumeHideTimer);
+  volumeHideTimer = setTimeout(()=> volumePop.classList.remove('show'), 1500);
+});
+
 
 // ---- Scene navigation with crossfade ----
 const scenes = ['scene-lock','scene-intro','scene-carousel','scene-grid','scene-letter','scene-finale'];
