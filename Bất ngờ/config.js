@@ -46,7 +46,7 @@ const FINALE_TEXT = "cảm ơn vì đã luôn là điều bất ngờ dịu dàn
 const CAROUSEL_PHOTOS = [
   { url: "photos/Chanh-asuka.jpg", caption: "Bức ảnh tớ ấn tượng" },
   { url: "photos/Ganyuu.jpg", caption: "Waifu " },
-  { url: "photos/ava.jpg", caption: "Ava" },
+  { url: "photos/Chanh.jpg", caption: "Ava" },
   { url: "photos/Mocchau.jpg", caption: "Ấm áp" },
 ];
 
@@ -57,11 +57,11 @@ const CAROUSEL_PHOTOS = [
 const GRID_PHOTOS = [
   { url: "photos/Asukachanh.jpg" },
   { url: "photos/tay.jpg" },
-  { url: "photos/biumoi.jpeg" },
-  { url: "photos/ava.jpg" },
-  { url: "photos/Mitsuri.jpg" },
-  { url: "photos/Chanhnew.jpg" },
-  { url: "photos/Moiday.jpeg" },
+  { url: "photos/Asukachanh2.jpg" },
+  { url: "photos/Ngo.jpg" },
+  { url: "photos/Cos.jpg" },
+  { url: "photos/Cos1.jpg" },
+  { url: "photos/Ganyuu.jpg" },
   { url: "photos/Osari.jpg" },
   { url: "photos/Ganyuu2.jpg" },
 ];
