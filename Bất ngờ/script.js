@@ -18,11 +18,20 @@ for(let i=0;i<70;i++){
   starsEl.appendChild(s);
 }
 
-// ---- Bokeh drifting light orbs ----
+// ---- Bokeh trôi nhẹ trong nền: hoa cẩm tú cầu + quả chanh ----
 const bokehEl = document.getElementById('bokeh');
-for(let i=0;i<10;i++){
+const BOKEH_ITEMS = [
+  // 'flower' = hoa cẩm tú cầu (to hơn), 'lemon' = quả chanh (nhỏ hơn)
+  { kind: 'flower', size: 150 }, { kind: 'lemon',  size: 62 },
+  { kind: 'flower', size: 110 }, { kind: 'lemon',  size: 78 },
+  { kind: 'flower', size: 170 }, { kind: 'lemon',  size: 56 },
+  { kind: 'flower', size: 95 },  { kind: 'lemon',  size: 70 },
+  { kind: 'flower', size: 130 }, { kind: 'lemon',  size: 64 },
+  { kind: 'flower', size: 105 }, { kind: 'lemon',  size: 80 },
+];
+BOKEH_ITEMS.forEach(({ kind, size }) => {
   const s = document.createElement('span');
-  const size = 60 + Math.random()*140;
+  s.className = kind === 'flower' ? 'bk-flower' : 'bk-lemon';
   s.style.width = size+'px';
   s.style.height = size+'px';
   s.style.left = Math.random()*100+'%';
@@ -32,7 +41,7 @@ for(let i=0;i<10;i++){
   s.style.animationDuration = (14+Math.random()*10)+'s';
   s.style.animationDelay = (Math.random()*6)+'s';
   bokehEl.appendChild(s);
-}
+});
 
 // ---- Gentle chime sound (synthesized, no external files) ----
 let audioCtx = null;

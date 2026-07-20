@@ -48,6 +48,10 @@ const CAROUSEL_PHOTOS = [
   { url: "photos/Ganyuu.jpg", caption: "Waifu " },
   { url: "photos/Chanh.jpg", caption: "Ava" },
   { url: "photos/Mocchau.jpg", caption: "Ấm áp" },
+  { url: "photos/Chanhnew.jpg", caption: "Dễ thương" },
+  { url: "photos/ava.jpg", caption: "Nụ cười" },
+  { url: "photos/Moiday.jpeg", caption: "Ngày mới" },
+  { url: "photos/biumoi.jpeg", caption: "Bĩu môi" },
 ];
 
 // 6) ẢNH ALBUM LƯỚI (màn "Album nhỏ của hai ta")

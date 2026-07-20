@@ -54,11 +54,15 @@
           phaseY: Math.random() * Math.PI * 2,
           phaseS: Math.random() * Math.PI * 2,
           speed: 0.035 + Math.random() * 0.035, // rất chậm
-          rangeX: 16 + Math.random() * 20,
-          rangeY: 12 + Math.random() * 16,
+          rangeX: 18 + Math.random() * 24,
+          rangeY: 14 + Math.random() * 18,
           scaleRange: 0.05 + Math.random() * 0.07,
-          opBase: 0.55 + Math.random() * 0.25,
-          opRange: 0.15 + Math.random() * 0.15
+          // Nhẹ hơn bản gốc: hoa/chanh là hình vẽ rõ nét nên không cần đậm
+          // như quầng sáng mờ trước đây, giữ cảm giác "trôi" thanh thoát.
+          opBase: 0.30 + Math.random() * 0.18,
+          opRange: 0.10 + Math.random() * 0.10,
+          rotBase: Math.random() * 24 - 12,
+          rotRange: 5 + Math.random() * 9
         };
       });
   }
@@ -148,8 +152,9 @@
       var dy = Math.cos(t * d.speed * 0.8 + d.phaseY) * d.rangeY;
       var scale = 1 + Math.sin(t * d.speed * 0.6 + d.phaseS) * d.scaleRange;
       var op = d.opBase + Math.sin(t * d.speed * 0.7 + d.phaseX) * d.opRange;
+      var rot = d.rotBase + Math.sin(t * d.speed * 0.5 + d.phaseS) * d.rotRange;
       d.el.style.transform =
-        "translate3d(" + dx.toFixed(2) + "px," + dy.toFixed(2) + "px,0) scale(" + scale.toFixed(3) + ")";
+        "translate3d(" + dx.toFixed(2) + "px," + dy.toFixed(2) + "px,0) scale(" + scale.toFixed(3) + ") rotate(" + rot.toFixed(1) + "deg)";
       d.el.style.opacity = Math.max(0.12, Math.min(0.9, op)).toFixed(3);
     }
 

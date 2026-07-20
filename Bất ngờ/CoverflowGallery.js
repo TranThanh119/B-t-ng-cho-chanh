@@ -113,6 +113,11 @@
     function render() {
       slideEls.forEach(function (slide, i) {
         var r = i - position;
+        if (n > 0) {
+          // Vòng lặp: quy về khoảng cách ngắn nhất trên "vòng tròn" ảnh,
+          // để kéo mãi sang một bên vẫn tự động lặp lại từ đầu.
+          r -= Math.round(r / n) * n;
+        }
         var absR = Math.abs(r);
         var dir = r === 0 ? 0 : (r > 0 ? 1 : -1);
 
@@ -154,21 +159,30 @@
     }
 
     function animateTo(t) {
-      target = clamp(t, 0, n - 1);
+      target = t;
       if (!rafId) rafId = requestAnimationFrame(loop);
     }
 
     function updateActive() {
       var idx = Math.round(target);
-      if (idx === activeIndex) return;
-      activeIndex = idx;
+      var real = n > 0 ? ((idx % n) + n) % n : idx; // chỉ số thật (0..n-1) sau khi quy vòng
+      if (real === activeIndex) return;
+      activeIndex = real;
       if (dotEls.length) {
-        dotEls.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
+        dotEls.forEach(function (d, i) { d.classList.toggle('on', i === real); });
       }
-      onChange(idx);
+      onChange(real);
     }
 
-    function goTo(i) { animateTo(i); }
+    // Đi tới ảnh có chỉ số i theo đường ngắn nhất trên vòng lặp (không giật ngược
+    // lại từ đầu danh sách khi đang ở gần cuối, và ngược lại).
+    function goTo(i) {
+      if (n <= 0) return;
+      var cur = target;
+      var delta = ((i - cur) % n + n) % n;
+      if (delta > n / 2) delta -= n;
+      animateTo(cur + delta);
+    }
     function next() { goTo(Math.round(target) + 1); }
     function prev() { goTo(Math.round(target) - 1); }
 
@@ -197,7 +211,7 @@
 
       var width = track.clientWidth || 1;
       var deltaIndex = -dx / (width * SPACING);
-      position = clamp(dragStartPos + deltaIndex, -0.6, (n - 1) + 0.6);
+      position = dragStartPos + deltaIndex; // không giới hạn -> kéo hoài sẽ tự lặp vòng
       target = position;
 
       var now = performance.now();
@@ -215,7 +229,8 @@
       // Chiếu vị trí thêm một đoạn theo vận tốc buông tay -> cảm giác quán tính,
       // rồi bám tới ảnh gần nhất bằng animateTo (easing mỗi frame ở loop()).
       var projected = position - (velocity * 90) / (width * SPACING);
-      animateTo(Math.round(projected));
+      target = Math.round(projected);
+      if (!rafId) rafId = requestAnimationFrame(loop);
     }
     track.addEventListener('pointerup', endDrag);
     track.addEventListener('pointercancel', endDrag);

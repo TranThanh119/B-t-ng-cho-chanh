@@ -31,14 +31,18 @@ body{
 }
 .bokeh{ position:fixed; inset:0; z-index:0; pointer-events:none; will-change:transform; }
 .bokeh span{
-  position:absolute; border-radius:50%; filter:blur(1px);
-  background: radial-gradient(circle at 35% 35%, rgba(216,180,120,.35), rgba(216,180,120,0) 70%);
+  position:absolute; background-repeat:no-repeat; background-position:center; background-size:contain;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,.18)) blur(0.4px);
   animation: drift linear infinite;
 }
+/* Hoa cẩm tú cầu trôi nhẹ trong nền — hình vẽ vector, không cần ảnh ngoài */
+.bokeh span.bk-flower{ background-image: url('photos/hydrangea.svg'); }
+/* Quả chanh trôi nhẹ trong nền — hợp với tên "Chanh" */
+.bokeh span.bk-lemon{ background-image: url('photos/lemon.svg'); }
 @keyframes drift{
-  0%{ transform: translate(0,0); }
-  50%{ transform: translate(var(--dx,20px), calc(var(--dy,-30px))); }
-  100%{ transform: translate(0,0); }
+  0%{ transform: translate(0,0) rotate(0deg); }
+  50%{ transform: translate(var(--dx,20px), calc(var(--dy,-30px))) rotate(6deg); }
+  100%{ transform: translate(0,0) rotate(0deg); }
 }
 /* Khi animation/background.js hoạt động, nó tự thêm class này để
    thay CSS drift bằng chuyển động chiều sâu (trôi/scale/opacity) mượt hơn qua rAF.
