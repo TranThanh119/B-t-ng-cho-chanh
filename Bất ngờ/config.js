@@ -65,7 +65,7 @@ const SHAPE3D_PHOTOS = {
     { url: "photos/13.jpg" }, { url: "photos/14.jpg" }, { url: "photos/15.jpg" }, { url: "photos/16.jpg" },
   ],
   heart: [
-    { url: "photos/17.jpg" }, { url: "photos/18.png" }, { url: "photos/19.jpg" }, { url: "photos/20.jpg" },
+    { url: "photos/17.jpg" }, { url: "photos/18.jpg" }, { url: "photos/19.jpg" }, { url: "photos/20.jpg" },
     { url: "photos/21.jpg" }, { url: "photos/22.jpg" }, { url: "photos/23.jpg" }, { url: "photos/24.jpg" },
   ],
   lemon: [
