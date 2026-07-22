@@ -12,6 +12,18 @@
    còn .shape3d-overlay tự thêm lại khoảng đệm cho phần chữ/nút. */
 .scene.scene--bleed{ padding:0; }
 
+/* Khi đang ở scene 4, ẩn toàn bộ lớp nền chung của site (glow, sao, hạt bụi,
+   bokeh, vignette, grain) — hình 3D "nổ" ra đóng vai trò nền riêng của scene
+   này, tránh bị các lớp nền khác chồng lên trên/che khuất canvas Three.js. */
+body.scene4-active .bg-glow,
+body.scene4-active .stars,
+body.scene4-active .particles,
+body.scene4-active .bokeh,
+body.scene4-active .vignette,
+body.scene4-active .grain{
+  opacity:0 !important;
+}
+
 .shape3d-wrap{
   position:absolute; inset:0;
   cursor: grab;

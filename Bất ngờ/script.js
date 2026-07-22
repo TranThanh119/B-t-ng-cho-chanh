@@ -158,6 +158,9 @@ function goTo(i){
     if(fromSceneName === 'scene-shape3d' && scenes[current] !== 'scene-shape3d') Shape3D.deactivate();
     if(scenes[current] === 'scene-shape3d') Shape3D.activate();
   }
+  // Scene 4 tự làm nền riêng bằng hạt 3D — ẩn lớp nền chung (glow/sao/hạt bụi/bokeh/vignette)
+  // của toàn site khi đang ở scene này, để không bị chồng lớp/che khuất hình 3D.
+  document.body.classList.toggle('scene4-active', scenes[current] === 'scene-shape3d');
 
   if(window.PageTransition){
     window.PageTransition.transition(fromEl, toEl, direction);

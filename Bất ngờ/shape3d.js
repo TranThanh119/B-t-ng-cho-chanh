@@ -73,6 +73,7 @@
   var rafId = null;
   var built = false, active = false;
   var dragging = false, dragLastX = 0, dragMoved = false;
+  var rotationVelocity = 0;
 
   var containerEl, canvasHostEl, photoLayerEl, hintEl, nameEl;
   var photosConfig = {};
