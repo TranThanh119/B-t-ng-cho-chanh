@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="gallery.css">
+<link rel="stylesheet" href="shape3d.css">
 <style>
   /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
   .hand-control-toggle{
@@ -98,13 +99,28 @@
     <button class="next-btn ready" id="btn-3">tiếp theo →</button>
   </section>
 
-  <!-- SCENE 4: Memory grid -->
-  <section class="scene" id="scene-grid">
-    <div class="eyebrow">Album nhỏ của hai ta</div>
-    <div class="grid-wrap">
-      <div class="memory-grid" id="memoryGrid"></div>
+  <!-- SCENE 4: 3D shape explosion gallery — hạt 3D phủ TOÀN màn hình của
+       chính scene này (không còn là một khung/thẻ nhỏ nổi giữa trang nữa),
+       hoà làm một với nền chung của website; các nút/chữ nổi phía trên. -->
+  <section class="scene scene--bleed" id="scene-shape3d">
+    <div class="shape3d-wrap" id="shape3dWrap">
+      <div class="shape3d-canvas-host" id="shape3dCanvasHost"></div>
+      <div class="shape3d-photo-layer" id="shape3dPhotoLayer"></div>
     </div>
-    <button class="next-btn ready" id="btn-4">tiếp theo →</button>
+    <div class="shape3d-overlay">
+      <div class="eyebrow">Nổ ra những khoảnh khắc</div>
+      <div class="shape3d-name" id="shape3dName">Hoa cẩm tú cầu</div>
+      <div class="shape3d-hint" id="shape3dHint">kéo để xoay · giữ nút "nổ ra" hoặc bật điều khiển bằng tay ở góc trên</div>
+      <div class="shape3d-controls">
+        <div class="shape3d-shapes">
+          <button class="shape3d-shape-btn active" data-shape="hydrangea" id="shapeBtnHydrangea" title="Hình chữ V bằng tay, giữ yên để chọn">🌸 Cẩm tú cầu</button>
+          <button class="shape3d-shape-btn" data-shape="heart" id="shapeBtnHeart" title="Hình chữ W bằng tay để chọn">💠 Trái tim</button>
+          <button class="shape3d-shape-btn" data-shape="lemon" id="shapeBtnLemon" title="Xòe ngón cái bằng tay để chọn">🍋 Quả chanh</button>
+        </div>
+        <button class="shape3d-explode-btn" id="shape3dExplodeBtn">giữ để "nổ" ra</button>
+      </div>
+      <button class="next-btn ready" id="btn-4">tiếp theo →</button>
+    </div>
   </section>
 
   <!-- SCENE 5: Letter -->
@@ -143,23 +159,30 @@
 <script src="animations/pageTransition.js"></script>
 <!-- components/CoverflowGallery.js: gallery ảnh kiểu Apple Coverflow -->
 <script src="CoverflowGallery.js"></script>
+<!-- components/CameraPreview.js: khung webcam nhỏ (dùng chung cho cả điều hướng trang lẫn scene 4) -->
+<script src="components/CameraPreview.js"></script>
+<!-- shape3d.js: hình 3D hạt "nổ" (scene 4) — nổ mở ra bằng kéo chuột/giữ nút/cử chỉ tay, ảnh chỉ hiện khi nổ hoàn toàn -->
+<script src="shape3d.js"></script>
 <!-- script.js: phần vận hành, không cần sửa -->
 <script src="script.js"></script>
 <!-- animation/background.js: chuyển động nền cinematic (bokeh chiều sâu, particles, parallax, glow). Tắt bằng cách đổi BG_ANIM_CONFIG.enabled = false trong file này -->
 <script src="animation/background.js"></script>
 
-<!-- components/CameraPreview.js: chỉ hiển thị khung webcam nhỏ góc phải dưới -->
-<script src="components/CameraPreview.js"></script>
 <!-- gestures/gestureDetector.js: khởi tạo MediaPipe Hands + nhận diện gesture thô -->
 <script src="gestures/gestureDetector.js"></script>
 <!-- gestures/handControl.js: quản lý trạng thái camera + debounce gesture (giữ 600ms, cooldown 1500ms) -->
 <script src="gestures/handControl.js"></script>
 <script>
 /* ============================================================
-   Wiring: nối "Bật điều khiển bằng tay" với website hiện có.
-   Đoạn này CHỈ map gesture đã xác nhận -> mô phỏng click/phím
-   trên các nút/phím tắt vốn đã tồn tại (script.js), không đụng
-   hay lặp lại logic điều hướng của website.
+   Wiring: nối "Bật điều khiển bằng tay" (nút DUY NHẤT, dùng
+   chung MỘT camera/model MediaPipe cho toàn bộ website) với
+   website hiện có.
+   - Gesture đã xác nhận (vuốt chữ V, nắm tay, dấu OK) -> mô phỏng
+     click/phím trên các nút/phím tắt vốn đã tồn tại (script.js).
+   - Landmarks thô mỗi frame -> chuyển tiếp cho Shape3D (scene 4)
+     để nó tự suy ra xoay hình / chụm ngón nổ / chọn hình theo
+     hình bàn tay — CHỈ khi đang thực sự ở scene 4.
+   Đoạn này không đụng hay lặp lại logic điều hướng của website.
    ============================================================ */
 (function () {
   'use strict';
@@ -174,7 +197,12 @@
     document.dispatchEvent(new KeyboardEvent('keydown', { key: key, bubbles: true }));
   }
 
-  // Xòe bàn tay + vuốt phải = section kế tiếp | Xòe bàn tay + vuốt trái = section trước
+  function isShape3DSceneActive() {
+    var el = document.getElementById('scene-shape3d');
+    return !!(el && el.classList.contains('active'));
+  }
+
+  // Chữ V ✌️ + vuốt phải = section kế tiếp | Chữ V + vuốt trái = section trước
   // Nắm tay lại = xác nhận / mở thư đang chọn | Dấu OK = bật/tắt nhạc nền
   function handleGestureConfirmed(gesture) {
     switch (gesture) {
@@ -193,6 +221,18 @@
     }
   }
 
+  // Gọi mỗi frame (không debounce) — chỉ có tác dụng khi đang ở scene 4,
+  // nơi Shape3D tự đọc landmarks để xoay hình / nổ hạt / đổi hình theo
+  // hình bàn tay (V giữ yên = cẩm tú cầu, W = trái tim, xòe ngón cái = chanh).
+  function handleLandmarks(lm) {
+    if (!global_Shape3D()) return;
+    var onScene4 = isShape3DSceneActive();
+    Shape3D.setHandActive(onScene4 && handControl && handControl.isActive());
+    if (onScene4) Shape3D.feedHandLandmarks(lm);
+  }
+
+  function global_Shape3D() { return typeof Shape3D !== 'undefined'; }
+
   function handleStateChange(state) {
     switch (state) {
       case 'starting':
@@ -209,6 +249,7 @@
         toggleBtn.classList.remove('pending', 'active');
         setLabel('Bật điều khiển bằng tay');
         window.CameraPreview && window.CameraPreview.hide();
+        if (global_Shape3D()) Shape3D.setHandActive(false);
         // Không chặn hay báo lỗi gây gián đoạn — website vẫn hoạt động bình thường.
         setLabel('Camera bị từ chối quyền truy cập');
         setTimeout(function () { setLabel('Bật điều khiển bằng tay'); }, 2600);
@@ -217,11 +258,13 @@
         toggleBtn.classList.remove('pending', 'active');
         setLabel('Bật điều khiển bằng tay');
         window.CameraPreview && window.CameraPreview.hide();
+        if (global_Shape3D()) Shape3D.setHandActive(false);
         break;
       case 'stopped':
         toggleBtn.classList.remove('pending', 'active');
         setLabel('Bật điều khiển bằng tay');
         window.CameraPreview && window.CameraPreview.hide();
+        if (global_Shape3D()) Shape3D.setHandActive(false);
         break;
     }
   }
@@ -230,6 +273,7 @@
     if (!handControl) {
       handControl = new HandControl({
         onGestureConfirmed: handleGestureConfirmed,
+        onLandmarks: handleLandmarks,
         onStateChange: handleStateChange,
         onError: function (err) {
           // Ghi log để dev debug, không làm gián đoạn trải nghiệm người dùng.
@@ -240,6 +284,7 @@
 
     if (handControl.isActive()) {
       handControl.disable();
+      if (global_Shape3D()) Shape3D.setHandActive(false);
       return;
     }
 

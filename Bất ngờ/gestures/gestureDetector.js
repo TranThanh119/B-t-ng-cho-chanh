@@ -2,10 +2,18 @@
    gestures/gestureDetector.js
    ------------------------------------------------------------
    CHỈ chịu trách nhiệm:
-   - Khởi tạo MediaPipe Hands
+   - Khởi tạo MediaPipe Hands (MỘT instance camera/model DUY NHẤT
+     cho toàn bộ trang — kể cả scene 4, xem shape3d.js)
    - Đọc luồng webcam (qua thẻ <video> được truyền vào)
-   - Nhận diện gesture thô mỗi frame: 'swipe-left', 'swipe-right'
-     (chỉ tính khi bàn tay đang xòe), 'fist' (nắm tay), 'ok', hoặc 'none'
+   - Nhận diện gesture thô mỗi frame để điều hướng trang:
+     'swipe-left', 'swipe-right' (chỉ tính khi bàn tay đang làm
+     hình chữ V ✌️ — trỏ+giữa duỗi, áp út+út cong), 'fist' (nắm
+     tay), 'ok', hoặc 'none'
+   - Ngoài ra, phát lại NGUYÊN VẸN landmarks thô của bàn tay mỗi
+     frame qua onLandmarks(lm) (hoặc null khi không thấy tay) để
+     những phần khác của trang (vd. shape3d.js ở scene 4) tự suy
+     ra cử chỉ/chuyển động riêng của mình mà KHÔNG cần mở thêm
+     một camera/model MediaPipe thứ hai.
    File này KHÔNG biết gì về giao diện / kịch bản website.
    Dùng thuần JavaScript + thư viện MediaPipe Hands (tải qua CDN).
    ============================================================ */
@@ -47,6 +55,10 @@
   function GestureDetector(opts) {
     this.videoEl = opts.videoEl;
     this.onGesture = opts.onGesture || function () {};
+    // onLandmarks: gọi mỗi frame với landmarks thô (mảng 21 điểm của
+    // MediaPipe Hands) khi thấy tay, hoặc null khi không thấy — dùng cho
+    // các cử chỉ liên tục (xoay, chụm ngón) riêng của scene 4.
+    this.onLandmarks = opts.onLandmarks || function () {};
     this.onError = opts.onError || function () {};
 
     this.hands = null;
@@ -121,17 +133,19 @@
     if (!this._running) return;
     var hasHand = results.multiHandLandmarks && results.multiHandLandmarks.length > 0;
     if (!hasHand) {
+      this.onLandmarks(null);
       this.onGesture('none');
       return;
     }
     var landmarks = results.multiHandLandmarks[0];
+    this.onLandmarks(landmarks);
     this.onGesture(this._classify(landmarks));
   };
 
   GestureDetector.prototype._classify = function (lm) {
     var now = performance.now();
-    var isPalmOpen = this._isPalmOpen(lm);
-    var swipeLabel = this._trackSwipe(lm, now, isPalmOpen);
+    var isVShape = this._isVShape(lm);
+    var swipeLabel = this._trackSwipe(lm, now, isVShape);
     if (swipeLabel) return swipeLabel;
 
     if (this._isFist(lm)) return 'fist';
@@ -140,12 +154,13 @@
   };
 
   // Theo dõi chuyển động ngang của cổ tay (landmark #0) để phát hiện swipe.
-  // CHỈ tích luỹ lịch sử khi bàn tay đang XOÈ (isPalmOpen) — vuốt bằng tay nắm
-  // lại hoặc đang làm dấu OK sẽ không bị tính nhầm là swipe.
-  GestureDetector.prototype._trackSwipe = function (lm, now, isPalmOpen) {
+  // CHỈ tích luỹ lịch sử khi bàn tay đang làm hình chữ V (isVShape) — vuốt
+  // bằng tay nắm lại, dấu OK, hay các hình bàn tay khác (dùng để chọn hình ở
+  // scene 4) sẽ không bị tính nhầm là vuốt chuyển trang.
+  GestureDetector.prototype._trackSwipe = function (lm, now, isVShape) {
     var wrist = lm[0];
 
-    if (!isPalmOpen) {
+    if (!isVShape) {
       this._wristHistory = [];
     } else {
       this._wristHistory.push({ x: wrist.x, t: now });
@@ -175,13 +190,16 @@
     return null;
   };
 
-  // Bàn tay xòe: 4 ngón (trỏ, giữa, áp út, út) đều duỗi thẳng.
-  GestureDetector.prototype._isPalmOpen = function (lm) {
+  // Hình chữ V ✌️: ngón trỏ + ngón giữa duỗi thẳng, ngón áp út + út cong lại
+  // (ngón cái không xét, để không lẫn với dấu OK). Dùng làm "chìa khoá" cho
+  // vuốt chuyển trang, đồng thời cũng là cử chỉ chọn hình cẩm tú cầu ở scene 4
+  // (giữ yên chữ V mà không vuốt ngang).
+  GestureDetector.prototype._isVShape = function (lm) {
     var indexExt = this._isFingerExtended(lm, 8, 6);
     var middleExt = this._isFingerExtended(lm, 12, 10);
-    var ringExt = this._isFingerExtended(lm, 16, 14);
-    var pinkyExt = this._isFingerExtended(lm, 20, 18);
-    return indexExt && middleExt && ringExt && pinkyExt;
+    var ringCurled = this._isFingerCurled(lm, 16, 14);
+    var pinkyCurled = this._isFingerCurled(lm, 20, 18);
+    return indexExt && middleExt && ringCurled && pinkyCurled;
   };
 
   GestureDetector.prototype._dist = function (a, b) {

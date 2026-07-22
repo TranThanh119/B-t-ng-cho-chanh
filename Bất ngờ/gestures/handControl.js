@@ -9,6 +9,11 @@
    File này KHÔNG biết map gesture -> hành động gì trên website.
    Việc đó do nơi khởi tạo HandControl (ví dụ đoạn wiring trong
    index.html) truyền vào qua callback onGestureConfirmed.
+
+   onLandmarks (không debounce, gọi mỗi frame) được truyền thẳng từ
+   gestureDetector.js ra ngoài — dùng cho các cử chỉ liên tục/riêng
+   của scene 4 (xoay hình, chụm ngón để nổ, chọn hình theo hình bàn
+   tay) mà không cần mở thêm camera/model thứ hai.
    ============================================================ */
 (function (global) {
   'use strict';
@@ -25,6 +30,7 @@
   function HandControl(opts) {
     opts = opts || {};
     this.onGestureConfirmed = opts.onGestureConfirmed || function () {};
+    this.onLandmarks = opts.onLandmarks || function () {};
     this.onStateChange = opts.onStateChange || function () {};
     this.onError = opts.onError || function () {};
 
@@ -71,6 +77,7 @@
       self.detector = new global.GestureDetector({
         videoEl: self.videoEl,
         onGesture: function (label) { self._handleRawGesture(label); },
+        onLandmarks: function (lm) { self.onLandmarks(lm); },
         onError: function (err) { self.onError(err); }
       });
       return self.detector.start();
@@ -109,6 +116,7 @@
     if (this.videoEl) {
       this.videoEl.srcObject = null;
     }
+    this.onLandmarks(null);
     this._resetDebounce();
   };
 

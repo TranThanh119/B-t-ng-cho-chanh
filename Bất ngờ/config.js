@@ -44,31 +44,35 @@ const FINALE_TEXT = "cảm ơn vì đã luôn là điều bất ngờ dịu dàn
      bỏ ảnh vào đó, rồi ghi url: "photos/ten-anh.jpg"
    ============================================================ */
 const CAROUSEL_PHOTOS = [
-  { url: "photos/Chanh-asuka.jpg", caption: "Bức ảnh đầu tiên" },
-  { url: "photos/Ganyuu.jpg", caption: "Waifu " },
-  { url: "photos/Chanh.jpg", caption: "Ava" },
-  { url: "photos/Mocchau.jpg", caption: "Ấm áp" },
-  { url: "photos/Chanhnew.jpg", caption: "Dễ thương" },
-  { url: "photos/ava.jpg", caption: "Nụ cười" },
-  { url: "photos/Moiday.jpeg", caption: "Ngày mới" },
-  { url: "photos/biumoi.jpeg", caption: "Bĩu môi" },
+  { url: "photos/1.jpg", caption: "Bức ảnh đầu tiên" },
+  { url: "photos/2.jpg", caption: "Waifu " },
+  { url: "photos/3.jpg", caption: "Ava" },
+  { url: "photos/4.jpg", caption: "Ấm áp" },
+  { url: "photos/5.jpg", caption: "Dễ thương" },
+  { url: "photos/6.jpg", caption: "Nụ cười" },
+  { url: "photos/7.jpg", caption: "Ngày mới" },
+  { url: "photos/8.jpg", caption: "Bĩu môi" },
 ];
 
-// 6) ẢNH ALBUM LƯỚI (màn "Album nhỏ của hai ta")
+// 6) ẢNH "NỔ" HÌNH 3D 
+// - Có 3 hình 3D: hydrangea (hoa cẩm tú cầu), heart (trái tim), lemon (quả chanh)
+// - Mỗi hình có ĐÚNG 8 ảnh, khi hình nổ mở ra hoàn toàn thì 8 ảnh này mới hiện lên
 // - Điền url: "photos/ten-anh.jpg" để dùng ảnh thật
-// - Để url: "" thì sẽ hiện khung placeholder
-// - Muốn thêm/bớt ô thì thêm/bớt dòng { url: "..." } trong danh sách
-const GRID_PHOTOS = [
-  { url: "photos/Asukachanh.jpg" },
-  { url: "photos/tay.jpg" },
-  { url: "photos/Asukachanh2.jpg" },
-  { url: "photos/Ngo.jpg" },
-  { url: "photos/Cos.jpg" },
-  { url: "photos/Cos1.jpg" },
-  { url: "photos/Ganyuu.jpg" },
-  { url: "photos/Osari.jpg" },
-  { url: "photos/Ganyuu2.jpg" },
-];
+// - Để url: "" thì sẽ hiện khung placeholder (bạn tự thay ảnh sau)
+const SHAPE3D_PHOTOS = {
+  hydrangea: [
+    { url: "photos/9.jpg" }, { url: "photos/10.jpg" }, { url: "photos/11.jpg" }, { url: "photos/12.jpg" },
+    { url: "photos/13.jpg" }, { url: "photos/14.jpg" }, { url: "photos/15.jpg" }, { url: "photos/16.jpg" },
+  ],
+  heart: [
+    { url: "photos/17.jpg" }, { url: "photos/18.jpg" }, { url: "photos/19.jpg" }, { url: "photos/20.jpg" },
+    { url: "photos/21.jpg" }, { url: "photos/22.jpg" }, { url: "photos/23.jpg" }, { url: "photos/24.jpg" },
+  ],
+  lemon: [
+    { url: "photos/25.jpg" }, { url: "photos/26.jpg" }, { url: "photos/27.jpg" }, { url: "photos/28.jpg" },
+    { url: "photos/29.jpg" }, { url: "photos/30.jpg" }, { url: "photos/31.jpg" }, { url: "photos/32.jpg" },
+  ],
+};
 // 7) NHẠC NỀN — đặt file nhạc vào thư mục "music" cạnh index.html,
 // rồi đổi tên file bên dưới cho khớp. Để "" thì sẽ không phát nhạc nền.
 const BG_MUSIC_URL = "music/Nguoiyeubolo.mp3";

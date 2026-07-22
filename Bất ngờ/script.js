@@ -129,7 +129,7 @@ volumeSlider.addEventListener('pointerup', ()=>{
 
 
 // ---- Scene navigation with crossfade ----
-const scenes = ['scene-lock','scene-intro','scene-carousel','scene-grid','scene-letter','scene-finale'];
+const scenes = ['scene-lock','scene-intro','scene-carousel','scene-shape3d','scene-letter','scene-finale'];
 let current = 0;
 const progressEl = document.getElementById('progress');
 scenes.forEach(()=>{ const i=document.createElement('i'); progressEl.appendChild(i); });
@@ -140,6 +140,7 @@ function goTo(i){
   ensureAudio();
 
   const direction = i > current ? 1 : -1; // 1 = tiến (Tiếp theo), -1 = lùi (Quay lại)
+  const fromSceneName = scenes[current];
   const fromEl = document.getElementById(scenes[current]);
   const toEl = document.getElementById(scenes[i]);
 
@@ -151,6 +152,12 @@ function goTo(i){
   if(scenes[current]==='scene-intro') startTypewriter();
   if(scenes[current]==='scene-letter') startLetter();
   if(scenes[current]==='scene-finale') startHearts();
+
+  // Scene 4 (hình 3D "nổ" ra ảnh): chỉ chạy render loop + camera khi đang ở trong scene này
+  if(window.Shape3D){
+    if(fromSceneName === 'scene-shape3d' && scenes[current] !== 'scene-shape3d') Shape3D.deactivate();
+    if(scenes[current] === 'scene-shape3d') Shape3D.activate();
+  }
 
   if(window.PageTransition){
     window.PageTransition.transition(fromEl, toEl, direction);
@@ -193,7 +200,7 @@ document.addEventListener('keydown', (e)=>{
   if(e.key !== 'ArrowRight' && e.key !== 'Enter') return;
   const sceneName = scenes[current];
   if(sceneName === 'scene-lock'){ document.getElementById('sealBtn').click(); return; }
-  const btnMap = { 'scene-intro':'btn-2', 'scene-carousel':'btn-3', 'scene-grid':'btn-4', 'scene-letter':'btn-5' };
+  const btnMap = { 'scene-intro':'btn-2', 'scene-carousel':'btn-3', 'scene-shape3d':'btn-4', 'scene-letter':'btn-5' };
   const btnId = btnMap[sceneName];
   if(btnId){
     const btn = document.getElementById(btnId);
@@ -245,30 +252,27 @@ CoverflowGallery({
 
 
 
-// ---- Memory grid (with tap-to-enlarge lightbox) ----
-function placeholderSVG(){
-  return `<svg class="placeholder-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z" stroke="#d8b478" stroke-width="1.3"/><circle cx="12" cy="13" r="3.4" stroke="#d8b478" stroke-width="1.3"/></svg>`;
-}
-const gridEl = document.getElementById('memoryGrid');
+// ---- Scene 4: hình 3D "nổ" ra ảnh (xem shape3d.js) ----
 const lightboxEl = document.getElementById('lightbox');
 const lightboxImgEl = document.getElementById('lightboxImg');
-GRID_PHOTOS.forEach((p,i)=>{
-  const div = document.createElement('div');
-  div.className = 'grid-item';
-  div.style.setProperty('--r', (Math.random()*6-3)+'deg');
-  div.style.setProperty('--i', i);
-  if(p.url){
-    div.style.backgroundImage = `url('${p.url}')`;
-    div.addEventListener('click', ()=>{
-      lightboxImgEl.style.backgroundImage = `url('${p.url}')`;
-      lightboxEl.classList.add('show');
-    });
-  } else {
-    div.innerHTML = placeholderSVG();
-  }
-  gridEl.appendChild(div);
-});
 lightboxEl.addEventListener('click', ()=> lightboxEl.classList.remove('show'));
+
+if(window.Shape3D){
+  Shape3D.init({
+    container: document.getElementById('shape3dWrap'),
+    canvasHost: document.getElementById('shape3dCanvasHost'),
+    photoLayer: document.getElementById('shape3dPhotoLayer'),
+    hint: document.getElementById('shape3dHint'),
+    nameEl: document.getElementById('shape3dName'),
+    explodeBtn: document.getElementById('shape3dExplodeBtn'),
+    lightboxEl: lightboxEl,
+    lightboxImgEl: lightboxImgEl,
+    photos: (typeof SHAPE3D_PHOTOS !== 'undefined') ? SHAPE3D_PHOTOS : {}
+  });
+  // Điều khiển bằng tay cho scene 4 giờ dùng CHUNG nút "Bật điều khiển bằng
+  // tay" ở đầu trang (xem đoạn wiring cuối index.html) — không còn nút/camera
+  // riêng cho scene này nữa.
+}
 
 // ---- Falling hearts on finale ----
 function startHearts(){
