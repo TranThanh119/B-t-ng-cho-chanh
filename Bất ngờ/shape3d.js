@@ -220,9 +220,18 @@
     global.addEventListener('resize', resize);
   }
 
+  // Kéo các mốc gắn ảnh gần tâm hình hơn khi chiếu ra màn hình (không ảnh
+  // hưởng vị trí hạt thật) — khi nổ hoàn toàn, nhiều mốc nằm quá xa lên
+  // trên/xuống dưới, dễ bị tràn ra ngoài khung hình.
+  var ANCHOR_CENTER_PULL = 0.55;
+
   function projectAnchor(idx) {
     var t = targets[idx], d = dirs[idx];
-    var v = new THREE_.Vector3(t.x + d.x * smoothExp, t.y + d.y * smoothExp, t.z + d.z * smoothExp);
+    var v = new THREE_.Vector3(
+      (t.x + d.x * smoothExp) * ANCHOR_CENTER_PULL,
+      (t.y + d.y * smoothExp) * ANCHOR_CENTER_PULL,
+      (t.z + d.z * smoothExp) * ANCHOR_CENTER_PULL
+    );
     particleSystem.updateMatrixWorld();
     v.applyMatrix4(particleSystem.matrixWorld);
     v.project(camera);

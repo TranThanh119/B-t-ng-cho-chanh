@@ -35,9 +35,9 @@ body.scene4-active .grain{
 
 .shape3d-photo-layer{ position:absolute; inset:0; pointer-events:none; z-index:1; }
 .shape3d-photo{
-  position:absolute; top:0; left:0; width:64px; height:64px;
-  border-radius:10px; background:#241a2c center/cover no-repeat;
-  border:1px solid var(--gold-soft); box-shadow:0 8px 22px rgba(0,0,0,.55);
+  position:absolute; top:0; left:0; width:192px; height:192px;
+  border-radius:18px; background:#241a2c center/cover no-repeat;
+  border:1px solid var(--gold-soft); box-shadow:0 16px 40px rgba(0,0,0,.55);
   display:flex; align-items:center; justify-content:center;
   opacity:0; pointer-events:none; will-change:transform,opacity;
   transition: box-shadow .25s ease;
@@ -94,7 +94,7 @@ body.scene4-active .grain{
 .shape3d-overlay .next-btn{ pointer-events:auto; }
 
 @media (max-width:480px){
-  .shape3d-photo{ width:50px; height:50px; }
+  .shape3d-photo{ width:150px; height:150px; }
   .shape3d-overlay{ padding: 6vh 6vw; }
 }
 
