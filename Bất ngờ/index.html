@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="gallery.css">
 <link rel="stylesheet" href="shape3d.css">
+<link rel="stylesheet" href="fallingtext.css">
 <style>
   /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
   .hand-control-toggle{
@@ -133,7 +134,23 @@
     <button class="next-btn ready" id="btn-5">mở tiếp →</button>
   </section>
 
-  <!-- SCENE 6: Finale -->
+  <!-- SCENE 6 (mới): Mưa lời yêu thương — chữ + ảnh rơi, chuyển thể
+       từ "Chữ rơi" (đã bỏ phần nhạc riêng, dùng chung nhạc nền của site).
+       Là scene "bleed" giống scene 4: tự vẽ nền riêng (sao + gradient tối),
+       không dùng lớp nền chung của site. -->
+  <section class="scene scene--bleed" id="scene-fallingtext">
+    <div class="fallingtext-wrap" id="fallingtextStage">
+      <canvas class="fallingtext-star-canvas" id="fallingtextStarCanvas"></canvas>
+      <div class="fallingtext-overlay">
+        <div class="eyebrow">Một điều nữa dành cho em</div>
+        <div class="fallingtext-title">Mưa lời yêu thương</div>
+        <p class="fallingtext-hint">chạm vào màn hình để thả những trái tim ✦</p>
+        <button class="next-btn ready" id="btn-6">tiếp theo →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 7: Finale -->
   <section class="scene" id="scene-finale">
     <div class="hearts-fall" id="heartsFall"></div>
     <div class="eyebrow">Sau tất cả</div>
@@ -163,6 +180,8 @@
 <script src="components/CameraPreview.js"></script>
 <!-- shape3d.js: hình 3D hạt "nổ" (scene 4) — nổ mở ra bằng kéo chuột/giữ nút/cử chỉ tay, ảnh chỉ hiện khi nổ hoàn toàn -->
 <script src="shape3d.js"></script>
+<!-- fallingtext.js: hiệu ứng "mưa" chữ + ảnh rơi (scene 6, chuyển thể từ "Chữ rơi") -->
+<script src="fallingtext.js"></script>
 <!-- script.js: phần vận hành, không cần sửa -->
 <script src="script.js"></script>
 <!-- animation/background.js: chuyển động nền cinematic (bokeh chiều sâu, particles, parallax, glow). Tắt bằng cách đổi BG_ANIM_CONFIG.enabled = false trong file này -->

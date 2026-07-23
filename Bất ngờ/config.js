@@ -77,3 +77,35 @@ const SHAPE3D_PHOTOS = {
 // rồi đổi tên file bên dưới cho khớp. Để "" thì sẽ không phát nhạc nền.
 const BG_MUSIC_URL = "music/Nguoiyeubolo.mp3";
 const BG_MUSIC_VOLUME = 0.35; // 0 -> 1
+
+/* ============================================================
+   8) MÀN "MƯA LỜI YÊU THƯƠNG" (chữ + ảnh rơi)
+   - Mỗi câu trong FALLINGTEXT_MESSAGES sẽ random rơi xuống màn hình
+   - Chạm/bấm vào màn hình để bung pháo hoa trái tim
+   ============================================================ */
+const FALLINGTEXT_MESSAGES = [
+  "Anh yêu em",
+  "Em là cả cuộc đời anh",
+  "Mãi mãi bên nhau",
+  "Em là ánh mặt trời của anh",
+  "Có em mọi thứ đều tốt đẹp hơn",
+  "Em là cả vũ trụ của anh",
+  "Cảm ơn em đã xuất hiện",
+  "Anh luôn nghĩ về em",
+  "Trái tim anh thuộc về em",
+  "Em là giấc mơ của anh",
+  "Anh yêu em rất nhiều",
+  "Em là niềm vui của anh",
+  "Em là tất cả của anh",
+  "Anh nhớ em",
+  "Anh yêu em vô cùng",
+  "Em là ánh sáng của anh",
+  "Em là bông hoa yêu thích của anh",
+  "Anh thích trò chuyện cùng em",
+  "Em là duy nhất",
+];
+
+// Ảnh rơi cùng chữ — đã có sẵn 20 ảnh chuyển từ "Chữ rơi" sang, nằm ở
+// fallingtext/img/roi-1.jpg ... roi-20.jpg. Muốn đổi ảnh thì thay file
+// trong thư mục đó (giữ nguyên tên) hoặc sửa danh sách dưới đây.
+const FALLINGTEXT_IMAGES = Array.from({ length: 20 }, (_, i) => `fallingtext/img/roi-${i + 1}.jpg`);

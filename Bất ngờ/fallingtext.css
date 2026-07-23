@@ -1,0 +1,85 @@
+/* ============================================================
+   fallingtext.css — Scene "Mưa lời yêu thương"
+   ------------------------------------------------------------
+   Chuyển thể từ dự án Gift_FallingTextv4 (chữ + ảnh rơi), tích hợp
+   làm 1 scene "bleed" giống scene 4 (hình 3D nổ): tự vẽ nền riêng
+   (bầu trời sao + gradient tối) phủ toàn màn hình, KHÔNG dùng lớp
+   nền chung của site (glow/sao/hạt bụi/bokeh/vignette/grain) —
+   xem quy tắc ẩn nền chung ở dưới, cùng cách làm với shape3d.css.
+   ============================================================ */
+
+.scene.scene--bleed{ padding:0; }
+
+/* Khi đang ở scene chữ rơi, ẩn toàn bộ lớp nền chung của site,
+   y hệt cách làm ở scene 4 (shape3d), để không bị chồng lớp. */
+body.fallingtext-active .bg-glow,
+body.fallingtext-active .stars,
+body.fallingtext-active .particles,
+body.fallingtext-active .bokeh,
+body.fallingtext-active .vignette,
+body.fallingtext-active .grain{
+  opacity:0 !important;
+}
+
+.fallingtext-wrap{
+  position:absolute; inset:0; overflow:hidden;
+  background: radial-gradient(ellipse at 50% 15%, #241226 0%, #0a0610 55%, #050308 100%);
+}
+
+.fallingtext-star-canvas{
+  position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;
+}
+
+/* Lớp phủ chữ/nút — neo phía trên & dưới, giống các scene khác của site */
+.fallingtext-overlay{
+  position:absolute; inset:0; z-index:3;
+  display:flex; flex-direction:column; align-items:center;
+  padding: 8vh 6vw; pointer-events:none;
+}
+.fallingtext-overlay > *{ pointer-events:auto; }
+.fallingtext-overlay .eyebrow{ margin-bottom:10px; }
+.fallingtext-title{
+  font-family:'Cormorant Garamond', serif; font-weight:600;
+  font-size: clamp(22px, 4vw, 34px); color: var(--cream);
+  text-shadow: 0 2px 18px rgba(0,0,0,.6);
+}
+.fallingtext-hint{
+  font-family:'Jost', sans-serif; font-size:12.5px; letter-spacing:.02em;
+  color: var(--muted); opacity:.85; margin-top:8px; text-align:center; max-width:36ch;
+}
+.fallingtext-overlay .next-btn{ margin-top:auto; }
+
+/* Chữ & ảnh rơi */
+.falling-item{ position:absolute; top:-14vh; user-select:none; pointer-events:none; z-index:2; will-change:transform, opacity; }
+.falling-word{
+  box-sizing:border-box; padding:10px 14px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  background:rgba(23,17,29,.6); backdrop-filter:blur(3px);
+  border:2px solid var(--gold-soft); border-radius:14px;
+  font-family:'Jost', sans-serif; font-weight:600; line-height:1.35;
+  overflow-wrap:break-word; color:var(--cream);
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+.falling-img{ border-radius:16px; object-fit:cover; display:block; }
+
+@keyframes fallingtext-fall{
+  0%{ transform:translateY(0); opacity:0; }
+  8%{ opacity:1; }
+  72%{ opacity:1; }
+  100%{ transform:translateY(112vh); opacity:0; }
+}
+
+.fallingtext-burst{
+  position:absolute; font-size:20px; font-weight:bold; z-index:4;
+  text-shadow:0 0 6px rgba(255,255,255,.65); opacity:0; pointer-events:none;
+  animation: fallingtext-explode 1.8s ease-out forwards;
+}
+@keyframes fallingtext-explode{
+  0%{ transform:translate(0,0) scale(1); opacity:1; }
+  100%{ transform:translate(var(--tx), var(--ty)) scale(0); opacity:0; }
+}
+
+@media (max-width:520px){
+  .fallingtext-overlay{ padding: 6vh 6vw 24px; }
+  .fallingtext-hint{ font-size:11.5px; }
+}

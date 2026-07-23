@@ -129,7 +129,7 @@ volumeSlider.addEventListener('pointerup', ()=>{
 
 
 // ---- Scene navigation with crossfade ----
-const scenes = ['scene-lock','scene-intro','scene-carousel','scene-shape3d','scene-letter','scene-finale'];
+const scenes = ['scene-lock','scene-intro','scene-carousel','scene-shape3d','scene-letter','scene-fallingtext','scene-finale'];
 let current = 0;
 const progressEl = document.getElementById('progress');
 scenes.forEach(()=>{ const i=document.createElement('i'); progressEl.appendChild(i); });
@@ -162,6 +162,14 @@ function goTo(i){
   // của toàn site khi đang ở scene này, để không bị chồng lớp/che khuất hình 3D.
   document.body.classList.toggle('scene4-active', scenes[current] === 'scene-shape3d');
 
+  // Scene "mưa lời yêu thương" cũng tự vẽ nền riêng (sao + gradient tối) —
+  // bật/tắt vòng lặp rơi/vẽ sao (fallingtext.js) và ẩn nền chung tương tự scene 4.
+  if(window.FallingText){
+    if(fromSceneName === 'scene-fallingtext' && scenes[current] !== 'scene-fallingtext') FallingText.deactivate();
+    if(scenes[current] === 'scene-fallingtext') FallingText.activate();
+  }
+  document.body.classList.toggle('fallingtext-active', scenes[current] === 'scene-fallingtext');
+
   if(window.PageTransition){
     window.PageTransition.transition(fromEl, toEl, direction);
   } else {
@@ -184,6 +192,7 @@ document.getElementById('btn-2').addEventListener('click', ()=> goTo(2));
 document.getElementById('btn-3').addEventListener('click', ()=> goTo(3));
 document.getElementById('btn-4').addEventListener('click', ()=> goTo(4));
 document.getElementById('btn-5').addEventListener('click', ()=> goTo(5));
+document.getElementById('btn-6').addEventListener('click', ()=> goTo(6));
 document.getElementById('replayBtn').addEventListener('click', ()=> {
   location.reload();
 });
@@ -203,7 +212,7 @@ document.addEventListener('keydown', (e)=>{
   if(e.key !== 'ArrowRight' && e.key !== 'Enter') return;
   const sceneName = scenes[current];
   if(sceneName === 'scene-lock'){ document.getElementById('sealBtn').click(); return; }
-  const btnMap = { 'scene-intro':'btn-2', 'scene-carousel':'btn-3', 'scene-shape3d':'btn-4', 'scene-letter':'btn-5' };
+  const btnMap = { 'scene-intro':'btn-2', 'scene-carousel':'btn-3', 'scene-shape3d':'btn-4', 'scene-letter':'btn-5', 'scene-fallingtext':'btn-6' };
   const btnId = btnMap[sceneName];
   if(btnId){
     const btn = document.getElementById(btnId);
