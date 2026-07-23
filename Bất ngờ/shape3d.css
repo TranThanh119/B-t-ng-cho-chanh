@@ -36,15 +36,16 @@ body.scene4-active .grain{
 .shape3d-photo-layer{ position:absolute; inset:0; pointer-events:none; z-index:1; }
 .shape3d-photo{
   position:absolute; top:0; left:0; width:192px; height:192px;
-  border-radius:18px; background:#241a2c center/cover no-repeat;
-  border:1px solid var(--gold-soft); box-shadow:0 16px 40px rgba(0,0,0,.55);
+  border-radius:20px; background:rgba(11,42,99,.45) center/cover no-repeat;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border:1px solid var(--secondary); box-shadow:0 16px 40px rgba(3,17,32,.55);
   display:flex; align-items:center; justify-content:center;
   opacity:0; pointer-events:none; will-change:transform,opacity;
   transition: box-shadow .25s ease;
 }
 .shape3d-photo.is-visible{ pointer-events:auto; cursor:zoom-in; }
-.shape3d-photo.is-visible:hover{ box-shadow:0 10px 28px rgba(216,180,120,.4); }
-.shape3d-photo svg{ opacity:.35; }
+.shape3d-photo.is-visible:hover{ box-shadow:0 10px 34px rgba(77,166,255,.45); }
+.shape3d-photo svg{ opacity:.4; }
 
 /* ---------- Lớp phủ chữ/nút — nổi trên hạt 3D, không chặn thao tác kéo-xoay ---------- */
 .shape3d-overlay{
@@ -57,15 +58,15 @@ body.scene4-active .grain{
 
 .shape3d-name{
   font-family:'Cormorant Garamond', serif; font-style:italic; font-size:20px;
-  color:var(--gold-soft); text-shadow:0 2px 10px rgba(0,0,0,.7); pointer-events:none;
+  color:var(--secondary); text-shadow:0 2px 14px rgba(3,17,32,.8); pointer-events:none;
 }
 
 /* Đẩy phần gợi ý + nút điều khiển + nút "tiếp theo" xuống sát đáy màn hình,
    trong khi eyebrow + tên hình vẫn neo ở trên — giống bố cục các scene khác. */
 .shape3d-hint{
   margin-top:auto;
-  font-family:'Jost',sans-serif; font-size:11px; letter-spacing:.08em;
-  color:var(--gold-soft); opacity:.65; pointer-events:none; transition:opacity .4s ease;
+  font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.08em;
+  color:var(--secondary); opacity:.7; pointer-events:none; transition:opacity .4s ease;
 }
 
 .shape3d-controls{
@@ -74,22 +75,25 @@ body.scene4-active .grain{
 }
 .shape3d-shapes{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
 .shape3d-shape-btn{
-  padding:8px 16px; border-radius:20px; border:1px solid var(--line);
-  background:rgba(20,14,24,.5); backdrop-filter:blur(6px);
+  padding:9px 18px; border-radius:22px; border:1px solid var(--glass-border);
+  background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--cream); font-size:12.5px;
-  font-family:'Jost',sans-serif; letter-spacing:.03em; cursor:pointer; transition:.25s;
+  font-family:'Poppins',sans-serif; letter-spacing:.03em; cursor:pointer;
+  transition:.25s cubic-bezier(.34,1.56,.64,1);
 }
-.shape3d-shape-btn:hover{ background:rgba(216,180,120,.14); }
-.shape3d-shape-btn.active{ border-color:var(--gold); background:rgba(216,180,120,.2); color:var(--gold-soft); }
+.shape3d-shape-btn:hover{ background:rgba(77,166,255,.18); transform:scale(1.06); box-shadow: var(--glow-soft); }
+.shape3d-shape-btn:active{ transform:scale(.95); }
+.shape3d-shape-btn.active{ border-color:var(--primary); background:rgba(77,166,255,.24); color:var(--secondary); box-shadow: var(--glow-primary); }
 
 .shape3d-explode-btn{
-  padding:10px 22px; border-radius:24px; border:1px solid var(--gold);
-  background:rgba(20,14,24,.35); backdrop-filter:blur(6px); color:var(--gold-soft); font-size:12px; letter-spacing:.1em;
+  padding:11px 24px; border-radius:26px; border:1px solid var(--primary);
+  background:rgba(77,166,255,.1); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
+  color:var(--secondary); font-size:12px; font-family:'Poppins',sans-serif; letter-spacing:.1em;
   text-transform:uppercase; cursor:pointer; -webkit-user-select:none; user-select:none;
-  transition: background .2s ease, transform .1s ease;
+  transition: background .2s ease, transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
 }
-.shape3d-explode-btn:hover{ background:rgba(216,180,120,.12); }
-.shape3d-explode-btn:active{ background:var(--gold); color:#1a1210; transform:scale(.97); }
+.shape3d-explode-btn:hover{ background:rgba(77,166,255,.2); transform:scale(1.05); box-shadow: var(--glow-primary); }
+.shape3d-explode-btn:active{ background:var(--primary); color:#04142B; transform:scale(.96); }
 
 .shape3d-overlay .next-btn{ pointer-events:auto; }
 

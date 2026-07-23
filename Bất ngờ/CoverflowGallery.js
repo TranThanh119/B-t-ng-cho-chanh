@@ -35,8 +35,8 @@
 
   function placeholderSVG() {
     return '<svg class="placeholder-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z" stroke="#d8b478" stroke-width="1.3"/>' +
-      '<circle cx="12" cy="13" r="3.4" stroke="#d8b478" stroke-width="1.3"/></svg>';
+      '<path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z" stroke="#7DD3FC" stroke-width="1.3"/>' +
+      '<circle cx="12" cy="13" r="3.4" stroke="#7DD3FC" stroke-width="1.3"/></svg>';
   }
 
   /**

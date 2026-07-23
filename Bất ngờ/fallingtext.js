@@ -24,8 +24,8 @@
   var IMAGES = (typeof FALLINGTEXT_IMAGES !== 'undefined') ? FALLINGTEXT_IMAGES : [];
 
   var ACCENT_COLORS = [
-    '#d8b478', '#e8d4a8', '#c9184a', '#ff8fa3',
-    '#eccc68', '#a55eea', '#1e90ff', '#2ed573'
+    '#4DA6FF', '#7DD3FC', '#A5F3FC', '#93C5FD',
+    '#60A5FA', '#38BDF8', '#BAE6FD', '#818CF8'
   ];
   var HEART_ICONS = ['❤️', '🩷', '💛', '💚', '💙', '💜', '✦'];
 

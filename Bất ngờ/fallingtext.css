@@ -23,7 +23,7 @@ body.fallingtext-active .grain{
 
 .fallingtext-wrap{
   position:absolute; inset:0; overflow:hidden;
-  background: radial-gradient(ellipse at 50% 15%, #241226 0%, #0a0610 55%, #050308 100%);
+  background: radial-gradient(ellipse at 50% 15%, #123B7A 0%, #071A35 55%, #031120 100%);
 }
 
 .fallingtext-star-canvas{
@@ -41,10 +41,10 @@ body.fallingtext-active .grain{
 .fallingtext-title{
   font-family:'Cormorant Garamond', serif; font-weight:600;
   font-size: clamp(22px, 4vw, 34px); color: var(--cream);
-  text-shadow: 0 2px 18px rgba(0,0,0,.6);
+  text-shadow: 0 2px 22px rgba(77,166,255,.4);
 }
 .fallingtext-hint{
-  font-family:'Jost', sans-serif; font-size:12.5px; letter-spacing:.02em;
+  font-family:'Inter', sans-serif; font-size:12.5px; letter-spacing:.03em;
   color: var(--muted); opacity:.85; margin-top:8px; text-align:center; max-width:36ch;
 }
 .fallingtext-overlay .next-btn{ margin-top:auto; }
@@ -54,11 +54,11 @@ body.fallingtext-active .grain{
 .falling-word{
   box-sizing:border-box; padding:10px 14px;
   display:flex; align-items:center; justify-content:center; text-align:center;
-  background:rgba(23,17,29,.6); backdrop-filter:blur(3px);
-  border:2px solid var(--gold-soft); border-radius:14px;
-  font-family:'Jost', sans-serif; font-weight:600; line-height:1.35;
+  background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
+  border:2px solid var(--secondary); border-radius:16px;
+  font-family:'Inter', sans-serif; font-weight:600; line-height:1.35;
   overflow-wrap:break-word; color:var(--cream);
-  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  box-shadow: 0 4px 18px rgba(3,17,32,.45), 0 0 18px rgba(77,166,255,.18);
 }
 .falling-img{ border-radius:16px; object-fit:cover; display:block; }
 
@@ -71,7 +71,7 @@ body.fallingtext-active .grain{
 
 .fallingtext-burst{
   position:absolute; font-size:20px; font-weight:bold; z-index:4;
-  text-shadow:0 0 6px rgba(255,255,255,.65); opacity:0; pointer-events:none;
+  text-shadow:0 0 8px rgba(165,243,252,.8); opacity:0; pointer-events:none;
   animation: fallingtext-explode 1.8s ease-out forwards;
 }
 @keyframes fallingtext-explode{

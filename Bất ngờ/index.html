@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Gửi em, một điều bất ngờ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Jost:wght@300;400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="gallery.css">
 <link rel="stylesheet" href="shape3d.css">
@@ -13,20 +13,23 @@
 <style>
   /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
   .hand-control-toggle{
-    position:fixed; top:calc(66px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
+    position:fixed; top:calc(70px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
     display:flex; align-items:center; gap:8px;
-    height:38px; padding:0 14px 0 10px; border-radius:19px;
-    border:1px solid var(--line, rgba(216,180,120,0.25));
-    background:rgba(20,14,24,.5); backdrop-filter:blur(6px);
-    color:var(--gold-soft, #e8d4a8); font-family:'Jost', sans-serif; font-size:12.5px;
-    cursor:pointer; transition:.3s; white-space:nowrap;
+    height:40px; padding:0 16px 0 12px; border-radius:20px;
+    border:1px solid var(--glass-border, rgba(165,243,252,0.28));
+    background:var(--glass-bg, rgba(11,42,99,.32));
+    backdrop-filter:blur(var(--glass-blur, 20px)); -webkit-backdrop-filter:blur(var(--glass-blur, 20px));
+    box-shadow:0 4px 18px rgba(3,17,32,.35);
+    color:var(--gold-soft, #7DD3FC); font-family:'Poppins', sans-serif; font-size:12.5px;
+    cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap;
   }
-  .hand-control-toggle:hover{ background:rgba(216,180,120,.14); }
+  .hand-control-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.06); box-shadow: var(--glow-soft, 0 0 18px rgba(125,211,252,.35)), 0 4px 18px rgba(3,17,32,.4); }
+  .hand-control-toggle:active{ transform:scale(.94); }
   .hand-control-toggle svg{ width:17px; height:17px; flex:none; }
-  .hand-control-toggle.active{ border-color:var(--gold, #d8b478); color:var(--cream, #f3e9dc); }
+  .hand-control-toggle.active{ border-color:var(--gold, #4DA6FF); color:var(--cream, #FFFFFF); box-shadow: var(--glow-primary, 0 0 26px rgba(77,166,255,.45)); }
   .hand-control-toggle.pending{ opacity:.6; cursor:wait; }
   @media (max-width:520px){
-    .hand-control-toggle{ top:calc(60px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); height:32px; font-size:11px; padding:0 10px 0 8px; }
+    .hand-control-toggle{ top:calc(62px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); height:34px; font-size:11px; padding:0 12px 0 10px; }
     .hand-control-toggle .hand-control-label{ display:none; }
   }
 </style>
