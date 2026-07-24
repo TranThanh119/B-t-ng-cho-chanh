@@ -80,35 +80,6 @@
   var photoEls = [];
   var lightboxEl, lightboxImgEl;
 
-  // ---- Profile bán kính quả chanh theo trục dọc (yNorm: -1 đáy .. +1 đỉnh) ----
-  // Đáy (-1) khép về 0 -> nhọn hẳn. Đỉnh (+1) khép về ~0.12 -> tù/nhỏ, không
-  // nhọn bằng đáy. Điểm phình lớn nhất lệch nhẹ lên trên tâm (yNorm ~ 0.02),
-  // giống mặt cắt dọc quả chanh thật thay vì hình elip đối xứng.
-  var LEMON_PROFILE = [
-    [-1.00, 0.00], [-0.88, 0.14], [-0.68, 0.38], [-0.42, 0.68], [-0.18, 0.92],
-    [0.02, 1.00], [0.22, 0.95], [0.48, 0.78], [0.70, 0.52], [0.86, 0.28], [1.00, 0.12]
-  ];
-  function lemonRadiusProfile(y) {
-    y = Math.max(-1, Math.min(1, y));
-    for (var k = 0; k < LEMON_PROFILE.length - 1; k++) {
-      var a = LEMON_PROFILE[k], b = LEMON_PROFILE[k + 1];
-      if (y >= a[0] && y <= b[0]) {
-        var span = b[0] - a[0] || 1e-6;
-        var f = (y - a[0]) / span;
-        var fs = 0.5 - 0.5 * Math.cos(f * Math.PI); // làm mượt đường cong (cosine)
-        return a[1] + (b[1] - a[1]) * fs;
-      }
-    }
-    return LEMON_PROFILE[LEMON_PROFILE.length - 1][1];
-  }
-  // Noise bề mặt giả-Perlin (tổng vài sóng sin lệch tần số/pha) — rẻ về hiệu
-  // năng, cho cảm giác vỏ hơi sần lặp lại tự nhiên thay vì random thuần gây rỗ.
-  function lemonSurfaceNoise(theta, y) {
-    return Math.sin(theta * 5.0 + y * 3.2) * 0.35 +
-      Math.sin(theta * 11.0 - y * 7.1 + 1.3) * 0.22 +
-      Math.sin(theta * 17.0 + y * 13.4 + 4.1) * 0.12;
-  }
-
   function buildParticlesFor(shapeKey) {
     var t = [], d = [];
     var colors = new Float32Array(PARTICLE_COUNT * 3);
@@ -156,67 +127,14 @@
         z = (Math.random() - 0.5) * 3;
         tmp.setHSL(0.96 + Math.random() * 0.03, 0.75 + Math.random() * 0.2, 0.55 + Math.random() * 0.15);
       } else {
-        // ---- Quả chanh: bám theo profile bán kính dọc trục (không còn là
-        // ellipsoid) + noise bề mặt nhẹ + mật độ dày giữa/thưa hai đầu. ----
-        var iu = (i + 0.5) / PARTICLE_COUNT;               // 0..1 đều theo chỉ số hạt
-        var s = iu * 2 - 1;                                 // -1..1
-        // dồn hạt về giữa: lũy thừa >1 kéo giá trị lại gần 0 -> giữa dày hơn,
-        // hai đầu (|s| gần 1) thưa hơn.
-        var yNorm = (s < 0 ? -1 : 1) * Math.pow(Math.abs(s), 1.55);
-        var Hbottom = 2.55, Htop = 2.05;                    // đáy "vươn" dài hơn -> cảm giác nhọn hơn đỉnh
-        var yPos = yNorm < 0 ? yNorm * Hbottom : yNorm * Htop;
-
-        var relR = lemonRadiusProfile(yNorm);
-        var maxR = 1.55;
-        var theta = Math.PI * (3 - Math.sqrt(5)) * i;       // góc vàng -> phủ đều quanh trục
-
-        // mặt cắt ngang hơi méo (không tròn tuyệt đối) -> cảm giác organic,
-        // hai đầu không đối xứng hoàn toàn quanh trục dọc
-        var ovalX = 1.0 + 0.05 * Math.cos(theta * 2 + yNorm * 1.7);
-        var ovalZ = 1.0 - 0.05 * Math.cos(theta * 2 + yNorm * 1.7);
-
-        // displacement rất nhỏ trên bề mặt (vỏ sần) — không làm méo hình tổng thể
-        var bump = lemonSurfaceNoise(theta, yNorm);
-        var rNoisy = relR * maxR * (1 + bump * 0.045);
-        rNoisy *= 1 + (Math.random() - 0.5) * 0.02;         // jitter cực nhẹ theo hạt
-
-        x = Math.cos(theta) * rNoisy * ovalX;
-        z = Math.sin(theta) * rNoisy * ovalZ;
-        y = yPos + bump * 0.03;
-
-        // ---- Màu: gradient vàng chanh thật (đỉnh sáng hơn, đáy tối hơn) ----
-        var topT = Math.max(0, Math.min(1, (yPos + Hbottom) / (Hbottom + Htop)));
-        var stops = [0xEBCF2A, 0xF4D73D, 0xFFD84A, 0xFFE45C]; // tối -> sáng
-        var ci = topT * (stops.length - 1);
-        var ciLow = Math.floor(ci), ciHigh = Math.min(stops.length - 1, ciLow + 1);
-        tmp.setHex(stops[ciLow]).lerp(new THREE_.Color(stops[ciHigh]), ci - ciLow);
-
-        // pháp tuyến xấp xỉ (hướng ra ngoài bề mặt) để giả lập đổ bóng khối
-        var nx = Math.cos(theta) * ovalX, nz = Math.sin(theta) * ovalZ;
-        var nlen = Math.sqrt(nx * nx + nz * nz) || 1;
-        nx /= nlen; nz /= nlen;
-        var ny = (yNorm < 0 ? 0.35 : 0.2) * yNorm;
-        var nnLen = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
-        nx /= nnLen; ny /= nnLen; nz /= nnLen;
-
-        // ánh sáng chính (tương ứng DirectionalLight) + nền (tương ứng
-        // HemisphereLight) -> tạo khối rõ mà vẫn không nhẵn phẳng
-        var lx = 0.5, ly = 0.62, lz = 0.75;
-        var llen = Math.sqrt(lx * lx + ly * ly + lz * lz);
-        var diffuse = Math.max(0, (nx * lx + ny * ly + nz * lz) / llen);
-        var shade = 0.62 + 0.4 * diffuse;
-        tmp.r *= shade; tmp.g *= shade; tmp.b *= shade;
-
-        // rim light nhẹ ánh xanh phía viền (hợp tone website) khi pháp
-        // tuyến gần vuông góc với hướng nhìn (camera đặt dọc trục Z)
-        var rim = Math.pow(Math.max(0, 1 - Math.abs(nz)), 3.2);
-        tmp.r = Math.min(1, tmp.r + rim * 0.05);
-        tmp.g = Math.min(1, tmp.g + rim * 0.08);
-        tmp.b = Math.min(1, tmp.b + rim * 0.16);
-
-        tmp.r = Math.min(1, Math.max(0, tmp.r + (Math.random() - 0.5) * 0.015));
-        tmp.g = Math.min(1, Math.max(0, tmp.g + (Math.random() - 0.5) * 0.015));
-        tmp.b = Math.min(1, Math.max(0, tmp.b + (Math.random() - 0.5) * 0.015));
+        var phi = Math.acos(1 - 2 * (i + 0.5) / PARTICLE_COUNT);
+        var lth = Math.PI * (3 - Math.sqrt(5)) * i;
+        var rx = 2.1, ry = 4.0, rz = 2.1;
+        var jitter = 1 + (Math.random() - 0.5) * 0.04;
+        x = rx * Math.sin(phi) * Math.cos(lth) * jitter;
+        y = ry * Math.cos(phi) * jitter;
+        z = rz * Math.sin(phi) * Math.sin(lth) * jitter;
+        tmp.setHSL(0.16 + Math.random() * 0.04, 0.75 + Math.random() * 0.2, 0.5 + Math.random() * 0.15);
       }
       t.push(new THREE_.Vector3(x, y, z));
       d.push(new THREE_.Vector3(x, y, z).normalize().multiplyScalar(Math.random() * 8 + 2));
@@ -284,20 +202,6 @@
     scene = new THREE_.Scene();
     camera = new THREE_.PerspectiveCamera(60, 1, 0.1, 1000);
     camera.position.z = 11;
-
-    // Ánh sáng tổng thể giữ tone xanh của website. Vì hạt dùng PointsMaterial
-    // (không tự nhận shading từ light như mesh), khối 3D của quả chanh được
-    // giả lập sẵn ngay trong màu từng hạt lúc build (xem buildParticlesFor).
-    // Vẫn thêm các light thật ở đây để nền cảnh có chiều sâu nhất quán và để
-    // sẵn sàng nếu sau này có mesh/geometry dùng vật liệu nhận sáng.
-    var hemiLight = new THREE_.HemisphereLight(0xbfe3ff, 0x14203a, 0.6);
-    scene.add(hemiLight);
-    var keyLight = new THREE_.DirectionalLight(0xfff3d0, 0.7);
-    keyLight.position.set(4, 5, 6);
-    scene.add(keyLight);
-    var rimLight = new THREE_.DirectionalLight(0x7dd3fc, 0.35);
-    rimLight.position.set(-3, -1, -6);
-    scene.add(rimLight);
     renderer = new THREE_.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(global.devicePixelRatio || 1, 2));
     canvasHostEl.innerHTML = '';

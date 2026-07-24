@@ -31,12 +31,16 @@
 
   // ---- Nhánh GSAP ----
   function runGSAP(fromEl, toEl, direction, done) {
-    var outY = direction === 1 ? -44 : 44;   // scene cũ trôi theo hướng ngược lại
-    var inY = direction === 1 ? 48 : -48;    // scene mới trượt vào từ hướng tiến
+    var outY = direction === 1 ? -48 : 48;   // scene cũ trôi theo hướng ngược lại
+    var inY = direction === 1 ? 52 : -52;    // scene mới trượt vào từ hướng tiến
+    var tiltOut = direction === 1 ? -5 : 5;  // nghiêng nhẹ theo trục X — cảm giác "camera" xoay quanh khối kính
+    var tiltIn = direction === 1 ? 6 : -6;
     var dur = DURATION_MS / 1000;
 
+    global.gsap.set(document.querySelector('.stage'), { perspective: 1400 });
     global.gsap.set(toEl, {
-      autoAlpha: 0, y: inY, scale: 0.94, filter: 'blur(10px)', visibility: 'visible'
+      autoAlpha: 0, y: inY, scale: 0.93, rotationX: tiltIn, transformPerspective: 1400,
+      filter: 'blur(12px)', visibility: 'visible'
     });
 
     var tl = global.gsap.timeline({
@@ -49,25 +53,25 @@
       }
     });
 
-    tl.to(fromEl, { autoAlpha: 0, y: outY, scale: 0.9, filter: 'blur(10px)' }, 0);
-    tl.to(toEl, { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)' }, dur * OVERLAP);
+    tl.to(fromEl, { autoAlpha: 0, y: outY, scale: 0.89, rotationX: tiltOut, filter: 'blur(12px)' }, 0);
+    tl.to(toEl, { autoAlpha: 1, y: 0, scale: 1, rotationX: 0, filter: 'blur(0px)' }, dur * OVERLAP);
   }
 
   // ---- Nhánh Web Animations API (fallback khi không có GSAP) ----
   function runWAAPI(fromEl, toEl, direction, done) {
-    var outY = direction === 1 ? -44 : 44;
-    var inY = direction === 1 ? 48 : -48;
+    var outY = direction === 1 ? -48 : 48;
+    var inY = direction === 1 ? 52 : -52;
     var delay = DURATION_MS * OVERLAP;
 
     toEl.style.visibility = 'visible';
 
     var outAnim = fromEl.animate([
       { opacity: 1, transform: 'translateY(0px) scale(1)', filter: 'blur(0px)' },
-      { opacity: 0, transform: 'translateY(' + outY + 'px) scale(0.9)', filter: 'blur(10px)' }
+      { opacity: 0, transform: 'translateY(' + outY + 'px) scale(0.89)', filter: 'blur(12px)' }
     ], { duration: DURATION_MS, easing: WAAPI_EASE, fill: 'forwards' });
 
     var inAnim = toEl.animate([
-      { opacity: 0, transform: 'translateY(' + inY + 'px) scale(0.94)', filter: 'blur(10px)' },
+      { opacity: 0, transform: 'translateY(' + inY + 'px) scale(0.93)', filter: 'blur(12px)' },
       { opacity: 1, transform: 'translateY(0px) scale(1)', filter: 'blur(0px)' }
     ], { duration: DURATION_MS - delay, delay: delay, easing: WAAPI_EASE, fill: 'forwards' });
 

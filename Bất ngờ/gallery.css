@@ -45,6 +45,7 @@
   box-shadow: 0 20px 60px rgba(3,17,32,.55), 0 0 0 1px rgba(77,166,255,.08);
   display:flex; align-items:flex-end; justify-content:center;
   transition: transform .4s cubic-bezier(.22,.61,.36,1), box-shadow .4s ease;
+  -webkit-box-reflect: below 6px linear-gradient(to bottom, transparent, transparent 55%, rgba(165,243,252,.14));
 }
 
 /* Ảnh trung tâm: bóng sâu hơn một chút để có cảm giác "nổi" lên hẳn phía trước */
@@ -52,9 +53,11 @@
   box-shadow: 0 30px 74px rgba(3,17,32,.6), 0 0 40px rgba(77,166,255,.18), 0 0 0 1px rgba(125,211,252,.2);
 }
 
-/* Hover: nổi lên + shadow sâu hơn + glow xanh (áp dụng cho mọi ảnh, kể cả ảnh hai bên) */
+/* Hover: nổi lên + xoay rất nhẹ + zoom + shadow sâu hơn + glow xanh
+   (áp dụng cho mọi ảnh, kể cả ảnh hai bên; độc lập với transform coverflow
+   3D mà CoverflowGallery.js set trên .cf-slide cha) */
 .cf-photo:hover{
-  transform: translateY(-12px) scale(1.045);
+  transform: translateY(-12px) scale(1.06) rotate(-1.2deg);
   box-shadow:
     0 36px 84px rgba(3,17,32,.64),
     0 0 44px rgba(77,166,255,.4),

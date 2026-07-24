@@ -20,7 +20,10 @@ body.scene4-active .stars,
 body.scene4-active .particles,
 body.scene4-active .bokeh,
 body.scene4-active .vignette,
-body.scene4-active .grain{
+body.scene4-active .grain,
+body.scene4-active .blob,
+body.scene4-active .bubbles,
+body.scene4-active .fireflies{
   opacity:0 !important;
 }
 
@@ -86,12 +89,20 @@ body.scene4-active .grain{
 .shape3d-shape-btn.active{ border-color:var(--primary); background:rgba(77,166,255,.24); color:var(--secondary); box-shadow: var(--glow-primary); }
 
 .shape3d-explode-btn{
+  position:relative; overflow:hidden;
   padding:11px 24px; border-radius:26px; border:1px solid var(--primary);
   background:rgba(77,166,255,.1); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); font-size:12px; font-family:'Poppins',sans-serif; letter-spacing:.1em;
   text-transform:uppercase; cursor:pointer; -webkit-user-select:none; user-select:none;
   transition: background .2s ease, transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
 }
+.shape3d-explode-btn::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.32) 50%, transparent 70%);
+  transform: translateX(-130%); will-change:transform;
+  transition: transform .65s cubic-bezier(.22,.61,.36,1);
+}
+.shape3d-explode-btn:hover::after{ transform: translateX(130%); }
 .shape3d-explode-btn:hover{ background:rgba(77,166,255,.2); transform:scale(1.05); box-shadow: var(--glow-primary); }
 .shape3d-explode-btn:active{ background:var(--primary); color:#04142B; transform:scale(.96); }
 

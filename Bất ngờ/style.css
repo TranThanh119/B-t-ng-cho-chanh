@@ -134,6 +134,110 @@ body::after{
   will-change:transform, opacity;
 }
 
+/* ---------- Light Blob / Blur Circle (mới) — trôi rất chậm, thuần CSS ---------- */
+.blob{
+  position:fixed; z-index:0; pointer-events:none; border-radius:50%;
+  filter: blur(70px); mix-blend-mode:screen; will-change:transform,opacity;
+}
+.blob-1{
+  width:38vw; height:38vw; top:-8vw; left:-6vw;
+  background: radial-gradient(circle, rgba(77,166,255,.4), transparent 70%);
+  animation: blobFloat1 34s ease-in-out infinite;
+}
+.blob-2{
+  width:30vw; height:30vw; bottom:-10vw; right:-8vw;
+  background: radial-gradient(circle, rgba(165,243,252,.32), transparent 70%);
+  animation: blobFloat2 40s ease-in-out infinite;
+}
+.blob-3{
+  width:22vw; height:22vw; top:38%; left:60%;
+  background: radial-gradient(circle, rgba(125,211,252,.26), transparent 70%);
+  animation: blobFloat3 30s ease-in-out infinite;
+}
+@keyframes blobFloat1{
+  0%,100%{ transform:translate3d(0,0,0) scale(1); opacity:.7; }
+  50%{ transform:translate3d(4vw,3vw,0) scale(1.12); opacity:1; }
+}
+@keyframes blobFloat2{
+  0%,100%{ transform:translate3d(0,0,0) scale(1); opacity:.6; }
+  50%{ transform:translate3d(-3vw,-4vw,0) scale(1.15); opacity:.95; }
+}
+@keyframes blobFloat3{
+  0%,100%{ transform:translate3d(0,0,0) scale(1); opacity:.55; }
+  50%{ transform:translate3d(-2.5vw,3vw,0) scale(1.1); opacity:.85; }
+}
+
+/* ---------- Bubble trôi (mới) ---------- */
+.bubbles{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; will-change:transform; }
+.bubbles span{
+  position:absolute; bottom:-10%; border-radius:50%;
+  border:1px solid rgba(165,243,252,.35);
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.18), rgba(125,211,252,.05) 60%, transparent 75%);
+  opacity:0; will-change:transform,opacity;
+  animation: bubbleRise linear infinite;
+}
+@keyframes bubbleRise{
+  0%{ transform:translate3d(0,0,0) scale(.85); opacity:0; }
+  10%{ opacity:.55; }
+  85%{ opacity:.4; }
+  100%{ transform:translate3d(var(--bx,14px),-118vh,0) scale(1.05); opacity:0; }
+}
+
+/* ---------- Firefly / Đom đóm (mới) — chớp sáng + trôi ngẫu nhiên ---------- */
+.fireflies{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; will-change:transform; }
+.fireflies span{
+  position:absolute; width:3px; height:3px; border-radius:50%;
+  background: var(--accent); opacity:0; will-change:transform,opacity;
+  box-shadow: 0 0 6px 1px rgba(165,243,252,.9), 0 0 14px 3px rgba(77,166,255,.5);
+  animation: fireflyDrift linear infinite, fireflyBlink ease-in-out infinite;
+}
+@keyframes fireflyDrift{
+  0%{ transform:translate3d(0,0,0); }
+  25%{ transform:translate3d(var(--fx1,26px), var(--fy1,-18px),0); }
+  50%{ transform:translate3d(var(--fx2,-18px), var(--fy2,-34px),0); }
+  75%{ transform:translate3d(var(--fx3,20px), var(--fy3,-14px),0); }
+  100%{ transform:translate3d(0,0,0); }
+}
+@keyframes fireflyBlink{
+  0%,100%{ opacity:0; }
+  50%{ opacity:.9; }
+}
+
+/* ---------- Cursor Glow / Trail / Sparkle (mới, chỉ bật trên thiết bị có con trỏ chuột) ---------- */
+.cursor-glow{
+  position:fixed; top:0; left:0; z-index:50; pointer-events:none;
+  width:220px; height:220px; margin:-110px 0 0 -110px; border-radius:50%;
+  background: radial-gradient(circle, rgba(77,166,255,.16), rgba(125,211,252,.05) 45%, transparent 72%);
+  opacity:0; transition: opacity .4s ease; will-change:transform,opacity;
+}
+.cursor-glow.is-visible{ opacity:1; }
+.cursor-dot{
+  position:fixed; top:0; left:0; z-index:51; pointer-events:none;
+  width:7px; height:7px; margin:-3.5px 0 0 -3.5px; border-radius:50%;
+  background: var(--secondary); box-shadow:0 0 8px rgba(125,211,252,.85);
+  opacity:0; transition: opacity .4s ease; will-change:transform,opacity;
+}
+.cursor-dot.is-visible{ opacity:1; }
+.cursor-trail{
+  position:fixed; top:0; left:0; z-index:49; pointer-events:none;
+  width:5px; height:5px; margin:-2.5px 0 0 -2.5px; border-radius:50%;
+  background: var(--accent); will-change:transform,opacity;
+}
+.cursor-sparkle{
+  position:fixed; top:0; left:0; z-index:52; pointer-events:none;
+  width:6px; height:6px; margin:-3px 0 0 -3px;
+  color:var(--accent); will-change:transform,opacity;
+  animation: sparklePop .7s ease-out forwards;
+}
+@keyframes sparklePop{
+  0%{ transform:translate(0,0) scale(0) rotate(0deg); opacity:1; }
+  60%{ opacity:1; }
+  100%{ transform:translate(var(--sx,0),var(--sy,-18px)) scale(1) rotate(90deg); opacity:0; }
+}
+@media (hover:none), (pointer:coarse){
+  .cursor-glow, .cursor-dot, .cursor-trail, .cursor-sparkle{ display:none !important; }
+}
+
 /* ---------- Sound toggle (glass) ---------- */
 .sound-control{
   position:fixed; top:calc(20px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
@@ -209,6 +313,51 @@ body::after{
 .scene::-webkit-scrollbar{ width:0; height:0; }
 .scene.active{ opacity:1; visibility:visible; pointer-events:auto; }
 
+/* ---------- Scroll-style reveal cho nội dung bên trong mỗi scene (mới) ----------
+   Chạy lại mỗi lần scene được kích hoạt (class .active thêm vào), tạo cảm giác
+   nội dung "cuộn" xuất hiện: opacity + translateY + blur + scale nhẹ, so le
+   theo thứ tự phần tử. Nút .next-btn/.replay bị hiển thị/ẩn bởi JS qua class
+   .ready — nên chỉ áp hiệu ứng chuyển động (không đụng opacity) để không phá
+   logic "chỉ hiện nút khi sẵn sàng". .seal có animation riêng (breathe/heartGlow)
+   nên được loại trừ khỏi rule chung. */
+@keyframes sceneReveal{
+  from{ opacity:0; transform:translateY(22px) scale(.97); filter:blur(9px); }
+  to{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+}
+@keyframes sceneRevealMotion{
+  from{ transform:translateY(16px) scale(.96); filter:blur(6px); }
+  to{ transform:translateY(0) scale(1); filter:blur(0); }
+}
+.scene.active > *:not(.shape3d-wrap):not(.fallingtext-wrap):not(.hearts-fall):not(.next-btn):not(.replay):not(.seal):not(.tap-hint):not(.letter-card):not(h2),
+.scene.active .shape3d-overlay > *:not(.next-btn),
+.scene.active .fallingtext-overlay > *:not(.next-btn){
+  animation: sceneReveal .85s cubic-bezier(.22,.61,.36,1) both;
+}
+.scene.active > .next-btn,
+.scene.active > .replay,
+.scene.active .shape3d-overlay > .next-btn,
+.scene.active .fallingtext-overlay > .next-btn{
+  animation: sceneRevealMotion .7s cubic-bezier(.22,.61,.36,1) both;
+}
+.scene.active > *:nth-child(1),
+.scene.active .shape3d-overlay > *:nth-child(1),
+.scene.active .fallingtext-overlay > *:nth-child(1){ animation-delay:.04s; }
+.scene.active > *:nth-child(2),
+.scene.active .shape3d-overlay > *:nth-child(2),
+.scene.active .fallingtext-overlay > *:nth-child(2){ animation-delay:.14s; }
+.scene.active > *:nth-child(3),
+.scene.active .shape3d-overlay > *:nth-child(3),
+.scene.active .fallingtext-overlay > *:nth-child(3){ animation-delay:.24s; }
+.scene.active > *:nth-child(4),
+.scene.active .shape3d-overlay > *:nth-child(4),
+.scene.active .fallingtext-overlay > *:nth-child(4){ animation-delay:.34s; }
+.scene.active > *:nth-child(5),
+.scene.active .shape3d-overlay > *:nth-child(5),
+.scene.active .fallingtext-overlay > *:nth-child(5){ animation-delay:.44s; }
+.scene.active > *:nth-child(6),
+.scene.active .shape3d-overlay > *:nth-child(6),
+.scene.active .fallingtext-overlay > *:nth-child(6){ animation-delay:.54s; }
+
 .eyebrow{
   font-family:'Inter', sans-serif; font-weight:500; letter-spacing:.4em; text-transform:uppercase;
   font-size:11px; color:var(--secondary); opacity:.85; margin-bottom:20px;
@@ -230,7 +379,7 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
   animation: breathe 3.2s ease-in-out infinite, heartGlow 3.2s ease-in-out infinite;
   transition: transform .5s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes breathe{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+@keyframes breathe{ 0%,100%{transform:scale(1) translateY(0);} 50%{transform:scale(1.06) translateY(-6px);} }
 @keyframes heartGlow{
   0%,100%{ box-shadow: 0 0 40px rgba(77,166,255,.5), 0 0 90px rgba(125,211,252,.3), inset 0 0 22px rgba(255,255,255,.2); }
   50%{ box-shadow: 0 0 56px rgba(77,166,255,.75), 0 0 120px rgba(165,243,252,.5), inset 0 0 26px rgba(255,255,255,.3); }
@@ -250,7 +399,12 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
 .seal-ring{ position:absolute; inset:-14px; width:calc(100% + 28px); height:calc(100% + 28px); animation: spin 22s linear infinite; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .seal svg:not(.seal-ring){ width:46px; height:46px; position:relative; z-index:1; }
-#scene-lock .seal.cracking{ transform:scale(1.18); }
+#scene-lock .seal.cracking{ animation: sealClick .5s cubic-bezier(.34,1.56,.64,1) forwards; }
+@keyframes sealClick{
+  0%{ transform:scale(1) translateY(0); }
+  45%{ transform:scale(1.24) translateY(-4px); }
+  100%{ transform:scale(1.15) translateY(-4px); }
+}
 .seal-crack{
   position:absolute; inset:0; border-radius:50%; opacity:0; pointer-events:none;
   background:
@@ -358,6 +512,7 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
   100%{ transform: translateY(115vh) translateX(0) rotate(360deg); }
 }
 .replay{
+  position:relative; overflow:hidden;
   margin-top:38px; padding:13px 28px; border-radius:30px; border:1px solid var(--primary);
   background:rgba(77,166,255,.08); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); letter-spacing:.14em; font-size:12px; font-family:'Poppins', sans-serif; font-weight:500;
@@ -368,6 +523,7 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
 
 /* ---------- Shared next-button ---------- */
 .next-btn{
+  position:relative; overflow:hidden;
   margin-top:40px; padding:12px 32px; border-radius:30px; border:1px solid var(--glass-border);
   background:var(--glass-bg-soft); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); font-size:12px; font-family:'Poppins', sans-serif; font-weight:500;
@@ -377,6 +533,16 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
 .next-btn.ready{ opacity:1; pointer-events:auto; }
 .next-btn:hover{ background:rgba(77,166,255,.2); border-color:var(--primary); transform:scale(1.06); box-shadow: var(--glow-primary); }
 .next-btn:active{ transform:scale(.95); }
+/* Gradient shimmer quét qua nút khi hover — chỉ dùng transform, không top/left */
+.next-btn::after,
+.replay::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.32) 50%, transparent 70%);
+  transform: translateX(-130%); will-change:transform;
+  transition: transform .65s cubic-bezier(.22,.61,.36,1);
+}
+.next-btn:hover::after,
+.replay:hover::after{ transform: translateX(130%); }
 
 /* ---------- Progress: ○────○────○────○ ---------- */
 .progress{

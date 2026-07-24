@@ -45,9 +45,14 @@
 <div class="bg-glow" id="bgGlow"></div>
 <div class="grain"></div>
 <div class="vignette"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
 <div class="bokeh" id="bokeh"></div>
 <div class="stars" id="stars"></div>
 <div class="particles" id="particles"></div>
+<div class="bubbles" id="bubbles"></div>
+<div class="fireflies" id="fireflies"></div>
 
 <button class="back-toggle" id="backBtn" aria-label="Quay lại" title="Quay lại">
   <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -173,10 +178,10 @@
 
 <!-- config.js: nơi bạn sửa tên, lời nhắn, ảnh -->
 <script src="config.js"></script>
-<!-- GSAP: engine chuyển cảnh cinematic. Nếu CDN lỗi/offline, animations/pageTransition.js sẽ tự rơi về Web Animations API -->
+<!-- GSAP: engine chuyển cảnh cinematic. Nếu CDN lỗi/offline, pageTransition.js sẽ tự rơi về Web Animations API -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<!-- animations/pageTransition.js: hiệu ứng chuyển section (fade + blur + scale, cảm giác lia máy quay) -->
-<script src="animations/pageTransition.js"></script>
+<!-- pageTransition.js: hiệu ứng chuyển section (fade + blur + scale + nghiêng nhẹ, cảm giác lia máy quay VisionOS) -->
+<script src="pageTransition.js"></script>
 <!-- components/CoverflowGallery.js: gallery ảnh kiểu Apple Coverflow -->
 <script src="CoverflowGallery.js"></script>
 <!-- components/CameraPreview.js: khung webcam nhỏ (dùng chung cho cả điều hướng trang lẫn scene 4) -->
@@ -189,6 +194,8 @@
 <script src="script.js"></script>
 <!-- animation/background.js: chuyển động nền cinematic (bokeh chiều sâu, particles, parallax, glow). Tắt bằng cách đổi BG_ANIM_CONFIG.enabled = false trong file này -->
 <script src="animation/background.js"></script>
+<!-- animation/motionExtras.js: đom đóm, bong bóng, cursor glow/trail/sparkle (chỉ trên máy có chuột). Tắt bằng cách đổi MOTION_EXTRAS_CONFIG.enabled = false trong file này -->
+<script src="animation/motionExtras.js"></script>
 
 <!-- gestures/gestureDetector.js: khởi tạo MediaPipe Hands + nhận diện gesture thô -->
 <script src="gestures/gestureDetector.js"></script>
