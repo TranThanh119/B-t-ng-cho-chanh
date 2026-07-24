@@ -91,11 +91,16 @@ function pauseBgMusic(){
 const soundToggle = document.getElementById('soundToggle');
 const iconOn = document.getElementById('soundIconOn');
 const iconOff = document.getElementById('soundIconOff');
+function setSoundPlayingState(isPlaying){
+  soundToggle.classList.toggle('is-playing', isPlaying);
+  soundToggle.setAttribute('aria-label', isPlaying ? 'Tắt âm thanh (đang phát)' : 'Bật âm thanh (đang tắt)');
+}
 soundToggle.addEventListener('click', ()=>{
   ensureAudio();
   soundOn = !soundOn;
   iconOn.style.display = soundOn ? '' : 'none';
   iconOff.style.display = soundOn ? 'none' : '';
+  setSoundPlayingState(soundOn);
   if(soundOn){ chimeTap(); playBgMusic(); }
   else { pauseBgMusic(); }
 });
@@ -119,8 +124,8 @@ volumeSlider.addEventListener('input', (e)=>{
   currentVolume = v;
   if(bgMusic) bgMusic.volume = v;
   localStorage.setItem('bgMusicVolume', String(v));
-  if(v > 0 && !soundOn){ soundOn = true; iconOn.style.display=''; iconOff.style.display='none'; playBgMusic(); }
-  if(v === 0 && soundOn){ soundOn = false; iconOn.style.display='none'; iconOff.style.display=''; pauseBgMusic(); }
+  if(v > 0 && !soundOn){ soundOn = true; iconOn.style.display=''; iconOff.style.display='none'; setSoundPlayingState(true); playBgMusic(); }
+  if(v === 0 && soundOn){ soundOn = false; iconOn.style.display='none'; iconOff.style.display=''; setSoundPlayingState(false); pauseBgMusic(); }
 });
 volumeSlider.addEventListener('pointerup', ()=>{
   clearTimeout(volumeHideTimer);
@@ -301,4 +306,31 @@ function startHearts(){
     s.style.fontSize = (12+Math.random()*14)+'px';
     wrap.appendChild(s);
   }
+  startConfettiLight();
 }
+
+// ---- Confetti ánh sáng nhẹ (xanh/cyan, không dùng đỏ) trên màn kết ----
+function startConfettiLight(){
+  const wrap = document.getElementById('confettiLight');
+  if(!wrap || wrap.childElementCount>0) return;
+  const shapes = ['rect','rect','dot']; // đa số là que nhỏ, xen kẽ chấm tròn
+  const colors = ['#4DA6FF','#7DD3FC','#A5F3FC','#93C5FD','#60A5FA'];
+  for(let i=0;i<34;i++){
+    const s = document.createElement('span');
+    const isDot = shapes[Math.floor(Math.random()*shapes.length)] === 'dot';
+    if(isDot) s.classList.add('dot');
+    const size = isDot ? (3+Math.random()*3) : (4+Math.random()*3);
+    s.style.width = size+'px';
+    s.style.height = isDot ? size+'px' : (size*2.6)+'px';
+    s.style.left = Math.random()*100+'%';
+    s.style.background = colors[Math.floor(Math.random()*colors.length)];
+    s.style.boxShadow = '0 0 8px rgba(125,211,252,.7)';
+    s.style.setProperty('--cx', (Math.random()*80-40)+'px');
+    s.style.setProperty('--cr', Math.round(Math.random()*360+180)+'deg');
+    s.style.setProperty('--co', (0.45+Math.random()*0.4).toFixed(2));
+    s.style.animationDuration = (7+Math.random()*7)+'s, ' + (1.6+Math.random()*1.4)+'s';
+    s.style.animationDelay = (Math.random()*7)+'s, ' + (Math.random()*1.6)+'s';
+    wrap.appendChild(s);
+  }
+}
+

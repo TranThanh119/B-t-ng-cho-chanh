@@ -244,6 +244,7 @@ body::after{
   display:flex; align-items:center; gap:0;
 }
 .sound-toggle{
+  position:relative;
   width:40px; height:40px; border-radius:50%; border:1px solid var(--glass-border);
   background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); display:flex; align-items:center; justify-content:center;
@@ -253,6 +254,37 @@ body::after{
 .sound-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.08); box-shadow: var(--glow-soft), 0 4px 18px rgba(3,17,32,.4); }
 .sound-toggle:active{ transform:scale(.92); }
 .sound-toggle svg{ width:17px; height:17px; }
+
+/* Trạng thái đang phát: viền sáng nhịp nhàng + chỉ báo equalizer nhỏ ở góc */
+.sound-toggle.is-playing{
+  border-color: var(--primary);
+  box-shadow: var(--glow-primary), 0 4px 18px rgba(3,17,32,.4);
+  animation: soundPlayingPulse 2.6s ease-in-out infinite;
+}
+@keyframes soundPlayingPulse{
+  0%,100%{ box-shadow: var(--glow-primary), 0 4px 18px rgba(3,17,32,.4); }
+  50%{ box-shadow: 0 0 34px rgba(77,166,255,.65), 0 4px 18px rgba(3,17,32,.4); }
+}
+.sound-eq{
+  position:absolute; right:-3px; bottom:-3px; z-index:1;
+  display:none; align-items:flex-end; gap:1.5px;
+  width:14px; height:11px; padding:2px 3px; border-radius:5px;
+  background: var(--bg-deep); border:1px solid var(--glass-border);
+}
+.sound-toggle.is-playing .sound-eq{ display:flex; }
+.sound-eq i{
+  display:block; width:2px; border-radius:1px; background:var(--secondary);
+  box-shadow:0 0 4px rgba(125,211,252,.8);
+  animation: soundEqBar .9s ease-in-out infinite;
+}
+.sound-eq i:nth-child(1){ height:4px; animation-delay:-.6s; }
+.sound-eq i:nth-child(2){ height:7px; animation-delay:-.3s; }
+.sound-eq i:nth-child(3){ height:5px; animation-delay:0s; }
+@keyframes soundEqBar{
+  0%,100%{ transform:scaleY(.4); }
+  50%{ transform:scaleY(1); }
+}
+.sound-toggle.is-playing svg{ position:relative; }
 
 .volume-pop{
   width:0; height:40px; opacity:0; overflow:hidden;
@@ -328,7 +360,7 @@ body::after{
   from{ transform:translateY(16px) scale(.96); filter:blur(6px); }
   to{ transform:translateY(0) scale(1); filter:blur(0); }
 }
-.scene.active > *:not(.shape3d-wrap):not(.fallingtext-wrap):not(.hearts-fall):not(.next-btn):not(.replay):not(.seal):not(.tap-hint):not(.letter-card):not(h2),
+.scene.active > *:not(.shape3d-wrap):not(.fallingtext-wrap):not(.hearts-fall):not(.confetti-light):not(.next-btn):not(.replay):not(.seal):not(.tap-hint):not(.letter-card):not(.finale-card):not(h2),
 .scene.active .shape3d-overlay > *:not(.next-btn),
 .scene.active .fallingtext-overlay > *:not(.next-btn){
   animation: sceneReveal .85s cubic-bezier(.22,.61,.36,1) both;
@@ -500,6 +532,33 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
 }
 @keyframes shine{ to{ background-position:200% center; } }
 #scene-finale p{ max-width:480px; color:var(--muted); font-size:15px; line-height:1.85; }
+
+/* Thẻ kính bọc lời nhắn kết thúc — cùng ngôn ngữ glass với letter-card,
+   tạo cảm giác "khép lại" trang trọng hơn thay vì chữ trôi nổi giữa nền. */
+.finale-card{
+  position:relative; max-width:560px; width:100%;
+  padding: 40px 36px 34px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(125,211,252,.16), transparent 55%),
+    var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+  border:1px solid var(--glass-border); border-radius:26px;
+  box-shadow: 0 30px 90px rgba(3,17,32,.55), 0 0 70px rgba(77,166,255,.16), inset 0 0 60px rgba(255,255,255,.03);
+  opacity:0; transform: translateY(18px) scale(.97); filter:blur(8px);
+  animation: finaleCardIn 1s cubic-bezier(.22,.61,.36,1) forwards;
+  animation-delay:.1s;
+}
+@keyframes finaleCardIn{ to{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); } }
+.finale-card::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background: linear-gradient(140deg, rgba(165,243,252,.5), transparent 40%, transparent 60%, rgba(77,166,255,.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events:none; opacity:.8;
+}
+.finale-card h2,
+.finale-card p{ position:relative; }
+
 .hearts-fall{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
 .hearts-fall span{
   position:absolute; top:-8%; color:var(--secondary); opacity:.7; font-size:16px;
@@ -511,6 +570,24 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
   50%{ transform: translateY(57.5vh) translateX(var(--dx,20px)) rotate(180deg); }
   100%{ transform: translateY(115vh) translateX(0) rotate(360deg); }
 }
+/* Confetti ánh sáng nhẹ — các hạt sáng nhỏ rơi/lắc lư chậm, xanh da trời/
+   cyan, KHÔNG dùng màu đỏ, tách biệt với hearts-fall (biểu tượng trái tim). */
+.confetti-light{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.confetti-light span{
+  position:absolute; top:-6%; border-radius:2px;
+  opacity:0; will-change:transform,opacity;
+  animation: confettiFall linear infinite, confettiTwinkle ease-in-out infinite;
+}
+.confetti-light span.dot{ border-radius:50%; }
+@keyframes confettiFall{
+  0%{ transform:translate3d(0,0,0) rotate(0deg); }
+  100%{ transform:translate3d(var(--cx,24px),118vh,0) rotate(var(--cr,220deg)); }
+}
+@keyframes confettiTwinkle{
+  0%,100%{ opacity:0; }
+  8%,85%{ opacity:var(--co,.75); }
+}
+
 .replay{
   position:relative; overflow:hidden;
   margin-top:38px; padding:13px 28px; border-radius:30px; border:1px solid var(--primary);
@@ -610,6 +687,89 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
   .cf-track{ width:min(880px,60vw); height:min(500px,55vh); }
   .cf-slide{ width:min(320px,26vw); }
 }
+
+/* ============================================================
+   Loading screen — logo trái tim + glow + progress + fade out
+   ============================================================ */
+.loading-screen{
+  position:fixed; inset:0; z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  background: radial-gradient(ellipse 90% 70% at 50% 40%, rgba(11,42,99,.9), var(--bg-deep) 75%);
+  transition: opacity .7s ease, visibility .7s ease;
+}
+.loading-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.loading-glow{
+  position:absolute; width:340px; height:340px; border-radius:50%;
+  background: radial-gradient(circle, rgba(77,166,255,.32), transparent 70%);
+  filter:blur(10px); animation: glowPulse2 3.6s ease-in-out infinite;
+}
+.loading-logo{
+  position:relative; width:64px; height:64px; color:var(--primary);
+  display:flex; align-items:center; justify-content:center;
+  filter: drop-shadow(0 0 18px rgba(77,166,255,.65));
+  animation: breathe 2.2s ease-in-out infinite;
+}
+.loading-logo svg{ width:38px; height:38px; }
+.loading-ring{
+  position:absolute; inset:-14px; border-radius:50%;
+  border:1.5px solid transparent; border-top-color:var(--secondary); border-right-color:rgba(125,211,252,.4);
+  animation: spin 1.1s linear infinite;
+}
+.loading-label{
+  position:relative; font-family:'Inter', sans-serif; font-size:12.5px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--secondary); opacity:.85; display:flex; align-items:center; gap:2px;
+}
+.loading-dots{ display:inline-flex; gap:3px; margin-left:4px; }
+.loading-dots i{
+  width:3px; height:3px; border-radius:50%; background:var(--secondary); display:inline-block;
+  animation: loadingDotBlink 1.2s ease-in-out infinite;
+}
+.loading-dots i:nth-child(2){ animation-delay:.15s; }
+.loading-dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes loadingDotBlink{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+.loading-bar{
+  position:relative; width:min(180px, 40vw); height:2px; border-radius:2px;
+  background: rgba(165,243,252,.18); overflow:hidden;
+}
+.loading-bar-fill{
+  width:0%; height:100%; border-radius:2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  box-shadow: 0 0 10px rgba(77,166,255,.7);
+  transition: width .4s ease;
+}
+@media (max-width:480px){
+  .loading-glow{ width:260px; height:260px; }
+  .loading-logo{ width:56px; height:56px; }
+  .loading-logo svg{ width:32px; height:32px; }
+}
+
+/* ============================================================
+   Accessibility — vùng chạm đủ lớn, focus rõ ràng cho bàn phím
+   ============================================================ */
+.next-btn, .replay, .hand-control-toggle{ min-height:44px; }
+button, .cf-slide, .dot, [role="button"]{ -webkit-tap-highlight-color: transparent; }
+/* Vùng chạm mở rộng (vô hình) cho các nút tròn nhỏ + dot, đạt chuẩn ≥44px
+   mà không phải phóng to kích thước hiển thị đã được tinh chỉnh kỹ.
+   .sound-toggle đã position:relative, .back-toggle đã position:fixed —
+   cả hai đều là "positioned element" hợp lệ nên chỉ cần bổ sung cho
+   .nav-btn/.dot vốn chưa có position, tránh đè lên position:fixed đã set. */
+.nav-btn, .dot{ position:relative; }
+.sound-toggle::after, .back-toggle::after, .nav-btn::after, .dot::after{
+  content:""; position:absolute; inset:-11px;
+}
+
+:focus-visible{
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.sound-toggle:focus-visible, .back-toggle:focus-visible, .nav-btn:focus-visible,
+.next-btn:focus-visible, .replay:focus-visible, .hand-control-toggle:focus-visible,
+.seal:focus-visible{
+  outline: 2px solid var(--secondary);
+  outline-offset: 4px;
+}
+.dot{ cursor:pointer; }
 
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.2s !important; }
