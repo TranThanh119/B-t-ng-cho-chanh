@@ -70,19 +70,10 @@
 }
 
 .cf-caption{
-  position:relative; width:100%; padding:16px 12px 18px;
-  background:linear-gradient(to top, rgba(3,17,32,.85) 10%, transparent);
+  position:relative; width:100%; padding:14px 10px 16px;
+  background:linear-gradient(to top, rgba(3,17,32,.8), transparent);
   font-family:'Caveat'; font-size:20px; color:var(--secondary);
-  text-shadow: 0 2px 12px rgba(3,17,32,.6);
-  letter-spacing:.01em;
-  opacity:.68; transform:translateY(2px) scale(.96);
-  transition: opacity .4s ease, transform .4s cubic-bezier(.22,.61,.36,1), text-shadow .4s ease;
   pointer-events:none;
-}
-/* Ảnh ở trung tâm: caption nổi bật rõ hơn, hơi lớn hơn + phát sáng nhẹ */
-.cf-slide.cf-center .cf-caption{
-  opacity:1; transform:translateY(0) scale(1.04);
-  text-shadow: 0 2px 16px rgba(3,17,32,.7), 0 0 18px rgba(125,211,252,.35);
 }
 
 @media (max-width: 560px){

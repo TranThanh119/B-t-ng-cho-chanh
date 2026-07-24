@@ -30,75 +30,7 @@ body.fallingtext-active .fireflies{
 }
 
 .fallingtext-star-canvas{
-  position:absolute; inset:0; z-index:1; width:100%; height:100%; display:block; pointer-events:none;
-}
-
-/* Aurora — dải sáng xanh trôi chậm, riêng cho scene này (nền chung đã bị ẩn) */
-.fallingtext-aurora{
-  position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-}
-.fallingtext-aurora::before,
-.fallingtext-aurora::after{
-  content:""; position:absolute; filter:blur(70px); mix-blend-mode:screen; will-change:transform,opacity;
-}
-.fallingtext-aurora::before{
-  inset:-25% -10% auto -10%; height:75%;
-  background:
-    radial-gradient(circle at 25% 30%, rgba(77,166,255,.34), transparent 60%),
-    radial-gradient(circle at 72% 18%, rgba(165,243,252,.26), transparent 55%);
-  animation: auroraDrift1 24s ease-in-out infinite;
-}
-.fallingtext-aurora::after{
-  inset:auto -10% -30% -10%; height:65%;
-  background:
-    radial-gradient(circle at 30% 70%, rgba(125,211,252,.24), transparent 55%),
-    radial-gradient(circle at 78% 55%, rgba(77,166,255,.22), transparent 60%);
-  animation: auroraDrift2 30s ease-in-out infinite;
-}
-
-/* Trái tim phát sáng ở trung tâm — nhịp thở chậm, là "trái tim" của cả cảnh */
-.fallingtext-heart-glow{
-  position:absolute; top:50%; left:50%; z-index:1; pointer-events:none;
-  width:180px; height:180px; margin:-90px 0 0 -90px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--secondary); opacity:.85;
-  animation: fthGlowBreathe 3.6s ease-in-out infinite;
-}
-.fallingtext-heart-glow svg{
-  width:64px; height:64px;
-  filter: drop-shadow(0 0 22px rgba(77,166,255,.7)) drop-shadow(0 0 48px rgba(125,211,252,.4));
-}
-.fallingtext-heart-glow::before{
-  content:""; position:absolute; inset:0; border-radius:50%;
-  background: radial-gradient(circle, rgba(77,166,255,.28), transparent 70%);
-  animation: fthGlowPulse 3.6s ease-in-out infinite;
-}
-@keyframes fthGlowBreathe{
-  0%,100%{ transform:scale(1); opacity:.75; }
-  50%{ transform:scale(1.08); opacity:1; }
-}
-@keyframes fthGlowPulse{
-  0%,100%{ opacity:.55; transform:scale(1); }
-  50%{ opacity:.95; transform:scale(1.25); }
-}
-@media (max-width:560px){
-  .fallingtext-heart-glow{ width:130px; height:130px; margin:-65px 0 0 -65px; }
-  .fallingtext-heart-glow svg{ width:46px; height:46px; }
-}
-
-/* Hạt bụi ánh sáng xanh trôi lên chậm — làm nền "sống" hơn giữa những đợt chữ rơi */
-.fallingtext-particles{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
-.fallingtext-particles span{
-  position:absolute; bottom:-6%; border-radius:50%;
-  background: radial-gradient(circle, var(--accent) 0%, rgba(165,243,252,0) 72%);
-  opacity:0; will-change:transform,opacity;
-  animation: fthParticleRise linear infinite;
-}
-@keyframes fthParticleRise{
-  0%{ transform:translate3d(0,0,0) scale(.7); opacity:0; }
-  12%{ opacity:var(--fp-o,.7); }
-  85%{ opacity:var(--fp-o,.7); }
-  100%{ transform:translate3d(var(--fp-x,16px),-110vh,0) scale(1.1); opacity:0; }
+  position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;
 }
 
 /* Lớp phủ chữ/nút — neo phía trên & dưới, giống các scene khác của site */
@@ -148,42 +80,6 @@ body.fallingtext-active .fireflies{
 @keyframes fallingtext-explode{
   0%{ transform:translate(0,0) scale(1); opacity:1; }
   100%{ transform:translate(var(--tx), var(--ty)) scale(0); opacity:0; }
-}
-
-/* Chạm vào màn hình: 1) vòng ripple lan toả, 2) trái tim bay lên, 3) tia sparkle */
-.fallingtext-ripple{
-  position:absolute; z-index:4; pointer-events:none;
-  width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%;
-  border:1.5px solid rgba(125,211,252,.75);
-  box-shadow: 0 0 16px rgba(77,166,255,.5);
-  animation: fthRipple 1s cubic-bezier(.22,.61,.36,1) forwards;
-}
-@keyframes fthRipple{
-  0%{ transform:scale(1); opacity:.9; }
-  100%{ transform:scale(11); opacity:0; }
-}
-
-.fallingtext-fly-heart{
-  position:absolute; z-index:4; pointer-events:none; color:var(--secondary);
-  filter: drop-shadow(0 0 10px rgba(77,166,255,.75));
-  animation: fthFlyHeart 1.4s cubic-bezier(.22,.61,.36,1) forwards;
-}
-.fallingtext-fly-heart svg{ width:100%; height:100%; }
-@keyframes fthFlyHeart{
-  0%{ transform:translate(0,0) scale(.5); opacity:0; }
-  15%{ opacity:1; }
-  100%{ transform:translate(var(--fh-x,0), var(--fh-y,-140px)) scale(1.15); opacity:0; }
-}
-
-.fallingtext-sparkle{
-  position:absolute; z-index:4; pointer-events:none; color:var(--accent);
-  text-shadow:0 0 8px rgba(165,243,252,.9);
-  animation: fthSparkle .9s ease-out forwards;
-}
-@keyframes fthSparkle{
-  0%{ transform:translate(0,0) scale(0) rotate(0deg); opacity:1; }
-  50%{ opacity:1; }
-  100%{ transform:translate(var(--sp-x,0), var(--sp-y,0)) scale(1) rotate(90deg); opacity:0; }
 }
 
 @media (max-width:520px){

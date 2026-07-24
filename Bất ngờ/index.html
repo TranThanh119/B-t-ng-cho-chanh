@@ -25,20 +25,9 @@
   }
   .hand-control-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.06); box-shadow: var(--glow-soft, 0 0 18px rgba(125,211,252,.35)), 0 4px 18px rgba(3,17,32,.4); }
   .hand-control-toggle:active{ transform:scale(.94); }
-  .hand-control-toggle svg{ width:17px; height:17px; flex:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1); }
-  .hand-control-toggle:hover svg{ transform:scale(1.1) rotate(-4deg); }
-  .hand-control-toggle.active{
-    border-color:var(--gold, #4DA6FF); color:var(--cream, #FFFFFF);
-    box-shadow: var(--glow-primary, 0 0 26px rgba(77,166,255,.45));
-    animation: handControlPulse 2.6s ease-in-out infinite;
-  }
-  @keyframes handControlPulse{
-    0%,100%{ box-shadow: var(--glow-primary, 0 0 26px rgba(77,166,255,.45)); }
-    50%{ box-shadow: 0 0 36px rgba(77,166,255,.7); }
-  }
-  .hand-control-toggle.pending{ opacity:.75; cursor:wait; }
-  .hand-control-toggle.pending svg{ animation: handControlSpin 1s linear infinite; }
-  @keyframes handControlSpin{ to{ transform:rotate(360deg); } }
+  .hand-control-toggle svg{ width:17px; height:17px; flex:none; }
+  .hand-control-toggle.active{ border-color:var(--gold, #4DA6FF); color:var(--cream, #FFFFFF); box-shadow: var(--glow-primary, 0 0 26px rgba(77,166,255,.45)); }
+  .hand-control-toggle.pending{ opacity:.6; cursor:wait; }
   @media (max-width:520px){
     .hand-control-toggle{ top:calc(62px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); height:34px; font-size:11px; padding:0 12px 0 10px; }
     .hand-control-toggle .hand-control-label{ display:none; }
@@ -47,81 +36,23 @@
 </head>
 <body>
 
-<!-- Loading screen: hiện khi trang vừa tải, ẩn dần khi mọi thứ (font, DOM) sẵn sàng -->
-<div class="loading-screen" id="loadingScreen" role="status" aria-live="polite">
-  <div class="loading-glow"></div>
-  <div class="loading-logo">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M12 21s-7.5-4.6-10-9.2C.5 8.1 2.3 4.5 6 4.5c2 0 3.6 1.2 4.6 2.7C11.6 5.7 13.2 4.5 15.2 4.5c3.7 0 5.5 3.6 4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/>
-    </svg>
-    <span class="loading-ring"></span>
-  </div>
-  <div class="loading-label">đang chuẩn bị một điều bất ngờ<span class="loading-dots"><i></i><i></i><i></i></span></div>
-  <div class="loading-bar"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
-</div>
-<script>
-/* Loading screen: chạy độc lập, sớm nhất có thể — không phụ thuộc các
-   script khác (GSAP/gestures/...) nên vẫn hoạt động kể cả khi chúng tải chậm. */
-(function () {
-  'use strict';
-  var screenEl = document.getElementById('loadingScreen');
-  var fillEl = document.getElementById('loadingBarFill');
-  if (!screenEl || !fillEl) return;
-
-  var progress = 0, done = false;
-  function setProgress(p) {
-    progress = Math.max(progress, Math.min(p, 100));
-    fillEl.style.width = progress + '%';
-  }
-  // Tiến chậm dần tới 92% trong lúc chờ trang thật sự sẵn sàng, tạo cảm giác
-  // "đang tải" mượt mà thay vì đứng yên hoặc nhảy 0 -> 100 đột ngột.
-  var tick = setInterval(function () {
-    setProgress(progress + (92 - progress) * 0.12 + 0.4);
-    if (progress >= 91.5) clearInterval(tick);
-  }, 120);
-
-  function finish() {
-    if (done) return;
-    done = true;
-    clearInterval(tick);
-    setProgress(100);
-    setTimeout(function () {
-      screenEl.classList.add('hide');
-      setTimeout(function () { screenEl.style.display = 'none'; }, 750);
-    }, 260);
-  }
-
-  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-  Promise.all([
-    fontsReady.catch(function () {}),
-    new Promise(function (resolve) {
-      if (document.readyState === 'complete') resolve();
-      else window.addEventListener('load', resolve, { once: true });
-    })
-  ]).then(finish);
-
-  // An toàn: không để loading screen kẹt mãi nếu có tài nguyên tải rất chậm (nhạc nền, CDN...)
-  setTimeout(finish, 4500);
-})();
-</script>
-
 <svg width="0" height="0" style="position:absolute">
   <filter id="grainFilter">
     <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
     <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0"/>
   </filter>
 </svg>
-<div class="bg-glow" id="bgGlow" aria-hidden="true"></div>
-<div class="grain" aria-hidden="true"></div>
-<div class="vignette" aria-hidden="true"></div>
-<div class="blob blob-1" aria-hidden="true"></div>
-<div class="blob blob-2" aria-hidden="true"></div>
-<div class="blob blob-3" aria-hidden="true"></div>
-<div class="bokeh" id="bokeh" aria-hidden="true"></div>
-<div class="stars" id="stars" aria-hidden="true"></div>
-<div class="particles" id="particles" aria-hidden="true"></div>
-<div class="bubbles" id="bubbles" aria-hidden="true"></div>
-<div class="fireflies" id="fireflies" aria-hidden="true"></div>
+<div class="bg-glow" id="bgGlow"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="bokeh" id="bokeh"></div>
+<div class="stars" id="stars"></div>
+<div class="particles" id="particles"></div>
+<div class="bubbles" id="bubbles"></div>
+<div class="fireflies" id="fireflies"></div>
 
 <button class="back-toggle" id="backBtn" aria-label="Quay lại" title="Quay lại">
   <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -134,7 +65,6 @@
   <button class="sound-toggle" id="soundToggle" aria-label="Bật/tắt âm thanh" title="Âm thanh">
     <svg id="soundIconOn" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-    <span class="sound-eq" id="soundEq" aria-hidden="true"><i></i><i></i><i></i></span>
   </button>
 </div>
 
@@ -218,12 +148,7 @@
        không dùng lớp nền chung của site. -->
   <section class="scene scene--bleed" id="scene-fallingtext">
     <div class="fallingtext-wrap" id="fallingtextStage">
-      <div class="fallingtext-aurora" aria-hidden="true"></div>
       <canvas class="fallingtext-star-canvas" id="fallingtextStarCanvas"></canvas>
-      <div class="fallingtext-particles" id="fallingtextParticles" aria-hidden="true"></div>
-      <div class="fallingtext-heart-glow" id="fallingtextHeartGlow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.1 2.3 4.5 6 4.5c2 0 3.6 1.2 4.6 2.7C11.6 5.7 13.2 4.5 15.2 4.5c3.7 0 5.5 3.6 4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>
-      </div>
       <div class="fallingtext-overlay">
         <div class="eyebrow">Một điều nữa dành cho em</div>
         <div class="fallingtext-title">Mưa lời yêu thương</div>
@@ -235,13 +160,10 @@
 
   <!-- SCENE 7: Finale -->
   <section class="scene" id="scene-finale">
-    <div class="hearts-fall" id="heartsFall" aria-hidden="true"></div>
-    <div class="confetti-light" id="confettiLight" aria-hidden="true"></div>
+    <div class="hearts-fall" id="heartsFall"></div>
     <div class="eyebrow">Sau tất cả</div>
-    <div class="finale-card">
-      <h2 id="finaleTitle"></h2>
-      <p id="finaleText"></p>
-    </div>
+    <h2 id="finaleTitle"></h2>
+    <p id="finaleText"></p>
     <button class="replay" id="replayBtn">xem lại từ đầu</button>
   </section>
 

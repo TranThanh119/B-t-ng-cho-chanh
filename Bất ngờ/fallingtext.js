@@ -17,8 +17,6 @@
   var stage = document.getElementById('fallingtextStage');
   var canvas = document.getElementById('fallingtextStarCanvas');
   var ctx = canvas.getContext('2d');
-  var particlesEl = document.getElementById('fallingtextParticles');
-  var HEART_SVG = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.1 2.3 4.5 6 4.5c2 0 3.6 1.2 4.6 2.7C11.6 5.7 13.2 4.5 15.2 4.5c3.7 0 5.5 3.6 4 7.3C19.5 16.4 12 21 12 21z" fill="currentColor"/></svg>';
 
   var MESSAGES = (typeof FALLINGTEXT_MESSAGES !== 'undefined' && FALLINGTEXT_MESSAGES.length)
     ? FALLINGTEXT_MESSAGES
@@ -74,25 +72,6 @@
       if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
     }
     rafId = requestAnimationFrame(drawStars);
-  }
-
-  // ---- Hạt bụi ánh sáng xanh trôi lên chậm (ambient, độc lập với sao) ----
-  function buildParticles() {
-    if (!particlesEl) return;
-    particlesEl.innerHTML = '';
-    var count = W < 520 ? 16 : 28;
-    for (var i = 0; i < count; i++) {
-      var p = document.createElement('span');
-      var size = Math.random() * 3 + 1.5;
-      p.style.left = Math.random() * 100 + '%';
-      p.style.width = size + 'px';
-      p.style.height = size + 'px';
-      p.style.setProperty('--fp-x', (Math.random() * 60 - 30) + 'px');
-      p.style.setProperty('--fp-o', (Math.random() * 0.4 + 0.35).toFixed(2));
-      p.style.animationDuration = (Math.random() * 10 + 10) + 's';
-      p.style.animationDelay = (Math.random() * 10) + 's';
-      particlesEl.appendChild(p);
-    }
   }
 
   // ---- Chữ & ảnh rơi ----
@@ -151,8 +130,6 @@
     var rect = stage.getBoundingClientRect();
     var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
     var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-
-    // 1) Sparkle nổ tán xạ quanh điểm chạm (giữ hiệu ứng gốc)
     for (var i = 0; i < config.burst; i++) {
       var particle = document.createElement('div');
       particle.className = 'fallingtext-burst';
@@ -167,49 +144,6 @@
       stage.appendChild(particle);
       (function (p) { setTimeout(function () { p.remove(); }, 1800); })(particle);
     }
-
-    // 2) Ripple lan toả từ điểm chạm
-    var ripple = document.createElement('div');
-    ripple.className = 'fallingtext-ripple';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    stage.appendChild(ripple);
-    setTimeout(function () { ripple.remove(); }, 1050);
-
-    // 3) Vài trái tim bay thẳng lên, lắc nhẹ hai bên
-    var heartCount = 3;
-    for (var h = 0; h < heartCount; h++) {
-      var heart = document.createElement('div');
-      heart.className = 'fallingtext-fly-heart';
-      heart.innerHTML = HEART_SVG;
-      var hs = Math.random() * 10 + 16;
-      heart.style.width = hs + 'px';
-      heart.style.height = hs + 'px';
-      heart.style.left = (x - hs / 2 + (Math.random() * 24 - 12)) + 'px';
-      heart.style.top = (y - hs / 2) + 'px';
-      heart.style.setProperty('--fh-x', (Math.random() * 60 - 30) + 'px');
-      heart.style.setProperty('--fh-y', -(Math.random() * 60 + 110) + 'px');
-      heart.style.animationDelay = (h * 0.08) + 's';
-      stage.appendChild(heart);
-      (function (el) { setTimeout(function () { el.remove(); }, 1550); })(heart);
-    }
-
-    // 4) Sparkle nhỏ lấp lánh quanh điểm chạm
-    var sparkleCount = 6;
-    for (var s = 0; s < sparkleCount; s++) {
-      var sp = document.createElement('div');
-      sp.className = 'fallingtext-sparkle';
-      sp.textContent = '✦';
-      sp.style.left = x + 'px';
-      sp.style.top = y + 'px';
-      sp.style.fontSize = (Math.random() * 8 + 9) + 'px';
-      var spAngle = Math.random() * Math.PI * 2;
-      var spDist = Math.random() * 46 + 18;
-      sp.style.setProperty('--sp-x', Math.cos(spAngle) * spDist + 'px');
-      sp.style.setProperty('--sp-y', Math.sin(spAngle) * spDist + 'px');
-      stage.appendChild(sp);
-      (function (el) { setTimeout(function () { el.remove(); }, 950); })(sp);
-    }
   }
 
   function clearFalling() {
@@ -221,7 +155,7 @@
   stage.addEventListener('click', handleTap);
   window.addEventListener('resize', function () {
     if (!active) return;
-    resizeCanvas(); buildStars(); buildParticles();
+    resizeCanvas(); buildStars();
   });
 
   // ---- API kích hoạt/tắt theo scene (gọi từ script.js khi chuyển cảnh) ----
@@ -231,7 +165,6 @@
       active = true;
       resizeCanvas();
       buildStars();
-      buildParticles();
       drawStars();
       var config = getFallingConfig();
       spawnTimer = setInterval(function () { createFalling(config); }, config.interval);
@@ -242,7 +175,6 @@
       if (spawnTimer) clearInterval(spawnTimer);
       rafId = null; spawnTimer = null;
       clearFalling();
-      if (particlesEl) particlesEl.innerHTML = '';
       ctx.clearRect(0, 0, W, H);
     }
   };
