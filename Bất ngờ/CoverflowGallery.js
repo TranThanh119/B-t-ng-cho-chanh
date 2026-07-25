@@ -23,10 +23,10 @@
   var DEPTH = 90;            // đẩy lùi theo trục Z (px) mỗi bước offset — ảnh giữa "nổi" lên trước
   var SCALE_STEP = 0.16;     // ảnh càng xa trung tâm càng nhỏ dần
   var MIN_SCALE = 0.62;
-  var BLUR_STEP = 0.7;       // px blur mỗi bước offset — cố tình rất nhẹ
-  var MAX_BLUR = 2.6;
-  var BRIGHTNESS_STEP = 0.16;// ảnh hai bên tối dần
-  var MIN_BRIGHTNESS = 0.5;
+  var BLUR_STEP = 0.25;       // px blur mỗi bước offset — cố tình rất nhẹ
+  var MAX_BLUR = 1;
+  var BRIGHTNESS_STEP = 0.04;// ảnh hai bên tối dần
+  var MIN_BRIGHTNESS = 0.9;
   var VISIBLE_RANGE = 3.2;   // vượt khoảng này thì ẩn hẳn khỏi tầm nhìn
   var SETTLE_EASE = 0.16;    // hệ số easing mỗi frame khi "đáp" — tạo cảm giác inertia nhẹ
   var CLICK_DRAG_THRESHOLD = 6; // px — phân biệt cú tap với cú kéo
