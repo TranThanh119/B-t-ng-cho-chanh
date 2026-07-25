@@ -28,11 +28,19 @@
   --muted: #BFE0FF;
   --line: rgba(165,243,252,0.28);
 
-  /* ---- Biến mới cho kính mờ (glassmorphism) ---- */
-  --glass-bg: rgba(11,42,99,0.32);
-  --glass-bg-soft: rgba(11,42,99,0.22);
-  --glass-border: rgba(165,243,252,0.28);
-  --glass-blur: 20px;
+  /* ---- Glassmorphism — dùng chung cho Button / Card / Popup / Menu /
+     Camera Preview / Gesture Panel để UI luôn nổi rõ trên nền Night Sky ---- */
+  --glass-bg: rgba(255,255,255,0.08);
+  --glass-bg-soft: rgba(255,255,255,0.05);
+  --glass-bg-hover: rgba(255,255,255,0.14);
+  --glass-border: rgba(255,255,255,.15);
+  --glass-blur: 18px;
+  --glass-blur-hover: 28px;
+  --glass-shadow: 0 8px 40px rgba(0,0,0,.35);
+  --glass-shadow-hover: 0 14px 54px rgba(0,0,0,.5);
+  --glass-radius: 24px;
+  --glass-radius-lg: 28px;
+  --glass-transition: .3s ease;
   --glow-primary: 0 0 26px rgba(77,166,255,.45);
   --glow-soft: 0 0 18px rgba(125,211,252,.35);
 }
@@ -327,7 +335,7 @@ body::after{
   .cursor-glow, .cursor-dot, .cursor-trail, .cursor-sparkle{ display:none !important; }
 }
 
-/* ---------- Sound toggle (glass) ---------- */
+/* ---------- Sound toggle (Button — Glassmorphism) ---------- */
 .sound-control{
   position:fixed; top:calc(20px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
   display:flex; align-items:center; gap:0;
@@ -336,19 +344,26 @@ body::after{
   width:40px; height:40px; border-radius:50%; border:1px solid var(--glass-border);
   background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1); flex:none;
-  box-shadow: 0 4px 18px rgba(3,17,32,.35);
+  cursor:pointer; flex:none;
+  box-shadow: var(--glass-shadow);
+  transition: background var(--glass-transition), backdrop-filter var(--glass-transition),
+              box-shadow var(--glass-transition), transform var(--glass-transition), border-color var(--glass-transition);
 }
-.sound-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.08); box-shadow: var(--glow-soft), 0 4px 18px rgba(3,17,32,.4); }
-.sound-toggle:active{ transform:scale(.92); }
+.sound-toggle:hover{
+  background:var(--glass-bg-hover); backdrop-filter:blur(var(--glass-blur-hover)); -webkit-backdrop-filter:blur(var(--glass-blur-hover));
+  transform:scale(1.03); box-shadow: var(--glass-shadow-hover), var(--glow-soft);
+}
+.sound-toggle:active{ transform:scale(.96); }
 .sound-toggle svg{ width:17px; height:17px; }
 
+/* ---------- Volume popup (Menu — Glassmorphism) ---------- */
 .volume-pop{
   width:0; height:40px; opacity:0; overflow:hidden;
   display:flex; align-items:center; justify-content:center;
   border-radius:20px; border:1px solid transparent;
   background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
-  transition: width .25s ease, opacity .25s ease, margin .25s ease, border-color .25s ease;
+  box-shadow: var(--glass-shadow);
+  transition: width .25s ease, opacity .25s ease, margin .25s ease, border-color .25s ease, backdrop-filter var(--glass-transition), box-shadow var(--glass-transition);
 }
 .volume-pop.show{ width:96px; opacity:1; margin-right:8px; border-color:var(--glass-border); }
 .volume-slider{
@@ -367,19 +382,23 @@ body::after{
 }
 .volume-slider::-moz-range-track{ background:var(--line); height:4px; border-radius:4px; }
 
-/* ---------- Back toggle (glass) ---------- */
+/* ---------- Back toggle (Button — Glassmorphism) ---------- */
 .back-toggle{
   position:fixed; top:calc(20px + env(safe-area-inset-top)); left:calc(20px + env(safe-area-inset-left)); z-index:6;
   width:40px; height:40px; border-radius:50%; border:1px solid var(--glass-border);
   background:var(--glass-bg); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
-  opacity:0; pointer-events:none;
-  box-shadow: 0 4px 18px rgba(3,17,32,.35);
+  cursor:pointer; opacity:0; pointer-events:none;
+  box-shadow: var(--glass-shadow);
+  transition: background var(--glass-transition), backdrop-filter var(--glass-transition),
+              box-shadow var(--glass-transition), transform var(--glass-transition), opacity var(--glass-transition);
 }
 .back-toggle.show{ opacity:1; pointer-events:auto; }
-.back-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.08); box-shadow: var(--glow-soft), 0 4px 18px rgba(3,17,32,.4); }
-.back-toggle:active{ transform:scale(.92); }
+.back-toggle:hover{
+  background:var(--glass-bg-hover); backdrop-filter:blur(var(--glass-blur-hover)); -webkit-backdrop-filter:blur(var(--glass-blur-hover));
+  transform:scale(1.03); box-shadow: var(--glass-shadow-hover), var(--glow-soft);
+}
+.back-toggle:active{ transform:scale(.96); }
 .back-toggle svg{ width:17px; height:17px; }
 @media (max-width:520px){
   .back-toggle{ top:calc(14px + env(safe-area-inset-top)); left:calc(14px + env(safe-area-inset-left)); width:36px; height:36px; }
@@ -520,36 +539,51 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
 
 /* ---------- Scene 4 : hình 3D "nổ" ra ảnh — xem shape3d.css ---------- */
 
-/* ---------- Lightbox ---------- */
+/* ---------- Lightbox (Popup — Glassmorphism) ---------- */
 .lightbox{
-  position:fixed; inset:0; z-index:20; background:rgba(3,17,32,.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  position:fixed; inset:0; z-index:20; background:rgba(3,4,10,.75); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   display:flex; align-items:center; justify-content:center;
-  opacity:0; visibility:hidden; transition: opacity .35s ease;
+  opacity:0; visibility:hidden; transition: opacity .35s ease, backdrop-filter var(--glass-transition);
   cursor:zoom-out;
 }
 .lightbox.show{ opacity:1; visibility:visible; }
 .lightbox-img{
-  width:min(80vw, 520px); height:min(80vh, 640px); background:center/contain no-repeat;
-  border-radius:14px; transform:scale(.92); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: 0 30px 90px rgba(3,17,32,.7), 0 0 60px rgba(77,166,255,.2);
+  width:min(80vw, 520px); height:min(80vh, 640px);
+  background-color: var(--glass-bg); background-position:center; background-size:contain; background-repeat:no-repeat;
+  border-radius:24px; transform:scale(.92);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow var(--glass-transition), backdrop-filter var(--glass-transition);
+  box-shadow: var(--glass-shadow), 0 0 60px rgba(77,166,255,.2);
+  backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
   border:1px solid var(--glass-border);
 }
 .lightbox.show .lightbox-img{ transform:scale(1); }
+.lightbox.show .lightbox-img:hover{
+  transform:scale(1.03); box-shadow: var(--glass-shadow-hover), 0 0 70px rgba(77,166,255,.28);
+  backdrop-filter: blur(var(--glass-blur-hover)); -webkit-backdrop-filter: blur(var(--glass-blur-hover));
+}
 
-/* ---------- Scene 5 : Letter (glass card) ---------- */
+/* ---------- Scene 5 : Letter (Card — Glassmorphism) ---------- */
 .letter-card{
   max-width:560px; width:100%;
   background:
     radial-gradient(ellipse at 15% 0%, rgba(125,211,252,.14), transparent 55%),
     var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+  /* Góc trên-trái nhỏ (8px) là chi tiết "gấp giấy thư" cố ý, các góc còn lại theo
+     đúng biên độ 20~30px của hệ Glassmorphism */
   border:1px solid var(--glass-border); border-radius:8px 26px 26px 26px; padding: 46px 40px;
-  box-shadow: 0 30px 80px rgba(3,17,32,.5), 0 0 60px rgba(77,166,255,.12), inset 0 0 60px rgba(255,255,255,.03);
+  box-shadow: var(--glass-shadow), 0 0 60px rgba(77,166,255,.12), inset 0 0 60px rgba(255,255,255,.03);
   text-align:left; position:relative;
   opacity:0; transform: translateY(18px) scale(.98);
   animation: letterIn .9s cubic-bezier(.22,.61,.36,1) forwards;
+  transition: box-shadow var(--glass-transition), backdrop-filter var(--glass-transition), transform var(--glass-transition);
 }
 @keyframes letterIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
+.letter-card:hover{
+  backdrop-filter: blur(var(--glass-blur-hover)); -webkit-backdrop-filter: blur(var(--glass-blur-hover));
+  box-shadow: var(--glass-shadow-hover), 0 0 70px rgba(77,166,255,.18), inset 0 0 60px rgba(255,255,255,.04);
+  transform: translateY(0) scale(1.03);
+}
 .letter-card::before{
   content:"❦"; position:absolute; top:20px; right:26px; color:var(--secondary); opacity:.6; font-size:18px;
 }
@@ -605,22 +639,34 @@ h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:
   margin-top:38px; padding:13px 28px; border-radius:30px; border:1px solid var(--primary);
   background:rgba(77,166,255,.08); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); letter-spacing:.14em; font-size:12px; font-family:'Poppins', sans-serif; font-weight:500;
-  text-transform:uppercase; cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1);
+  text-transform:uppercase; cursor:pointer; box-shadow: var(--glass-shadow);
+  transition: background var(--glass-transition), color var(--glass-transition), backdrop-filter var(--glass-transition),
+              transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow var(--glass-transition);
 }
-.replay:hover{ background:var(--primary); color:#04142B; transform:scale(1.06); box-shadow:0 8px 30px rgba(77,166,255,.45), var(--glow-primary); }
+.replay:hover{
+  background:var(--primary); color:#04142B; transform:scale(1.03);
+  backdrop-filter:blur(var(--glass-blur-hover)); -webkit-backdrop-filter:blur(var(--glass-blur-hover));
+  box-shadow: var(--glass-shadow-hover), var(--glow-primary);
+}
 .replay:active{ transform:scale(.96); }
 
-/* ---------- Shared next-button ---------- */
+/* ---------- Shared next-button (Button — Glassmorphism) ---------- */
 .next-btn{
   position:relative; overflow:hidden;
   margin-top:40px; padding:12px 32px; border-radius:30px; border:1px solid var(--glass-border);
   background:var(--glass-bg-soft); backdrop-filter:blur(var(--glass-blur)); -webkit-backdrop-filter:blur(var(--glass-blur));
   color:var(--secondary); font-size:12px; font-family:'Poppins', sans-serif; font-weight:500;
-  letter-spacing:.2em; text-transform:uppercase; cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1);
+  letter-spacing:.2em; text-transform:uppercase; cursor:pointer; box-shadow: var(--glass-shadow);
+  transition: background var(--glass-transition), border-color var(--glass-transition), backdrop-filter var(--glass-transition),
+              transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow var(--glass-transition), opacity var(--glass-transition);
   opacity:0; pointer-events:none;
 }
 .next-btn.ready{ opacity:1; pointer-events:auto; }
-.next-btn:hover{ background:rgba(77,166,255,.2); border-color:var(--primary); transform:scale(1.06); box-shadow: var(--glow-primary); }
+.next-btn:hover{
+  background:var(--glass-bg-hover); border-color:var(--primary); transform:scale(1.03);
+  backdrop-filter:blur(var(--glass-blur-hover)); -webkit-backdrop-filter:blur(var(--glass-blur-hover));
+  box-shadow: var(--glass-shadow-hover), var(--glow-primary);
+}
 .next-btn:active{ transform:scale(.95); }
 /* Gradient shimmer quét qua nút khi hover — chỉ dùng transform, không top/left */
 .next-btn::after,

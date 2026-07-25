@@ -11,22 +11,28 @@
 <link rel="stylesheet" href="shape3d.css">
 <link rel="stylesheet" href="fallingtext.css">
 <style>
-  /* Nút bật điều khiển bằng tay — cùng phong cách với .sound-toggle, đặt ngay bên dưới */
+  /* Gesture Panel — nút bật điều khiển bằng tay, cùng hệ Glassmorphism với .sound-toggle */
   .hand-control-toggle{
     position:fixed; top:calc(70px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); z-index:6;
     display:flex; align-items:center; gap:8px;
-    height:40px; padding:0 16px 0 12px; border-radius:20px;
-    border:1px solid var(--glass-border, rgba(165,243,252,0.28));
-    background:var(--glass-bg, rgba(11,42,99,.32));
-    backdrop-filter:blur(var(--glass-blur, 20px)); -webkit-backdrop-filter:blur(var(--glass-blur, 20px));
-    box-shadow:0 4px 18px rgba(3,17,32,.35);
+    height:40px; padding:0 16px 0 12px; border-radius:22px;
+    border:1px solid var(--glass-border, rgba(255,255,255,.15));
+    background:var(--glass-bg, rgba(255,255,255,0.08));
+    backdrop-filter:blur(var(--glass-blur, 18px)); -webkit-backdrop-filter:blur(var(--glass-blur, 18px));
+    box-shadow: var(--glass-shadow, 0 8px 40px rgba(0,0,0,.35));
     color:var(--gold-soft, #7DD3FC); font-family:'Poppins', sans-serif; font-size:12.5px;
-    cursor:pointer; transition:.3s cubic-bezier(.34,1.56,.64,1); white-space:nowrap;
+    cursor:pointer; white-space:nowrap;
+    transition: background .3s ease, backdrop-filter .3s ease, box-shadow .3s ease, transform .3s ease, border-color .3s ease;
   }
-  .hand-control-toggle:hover{ background:rgba(77,166,255,.18); transform:scale(1.06); box-shadow: var(--glow-soft, 0 0 18px rgba(125,211,252,.35)), 0 4px 18px rgba(3,17,32,.4); }
-  .hand-control-toggle:active{ transform:scale(.94); }
+  .hand-control-toggle:hover{
+    background:var(--glass-bg-hover, rgba(255,255,255,0.14));
+    backdrop-filter:blur(var(--glass-blur-hover, 28px)); -webkit-backdrop-filter:blur(var(--glass-blur-hover, 28px));
+    transform:scale(1.03);
+    box-shadow: var(--glass-shadow-hover, 0 14px 54px rgba(0,0,0,.5)), var(--glow-soft, 0 0 18px rgba(125,211,252,.35));
+  }
+  .hand-control-toggle:active{ transform:scale(.96); }
   .hand-control-toggle svg{ width:17px; height:17px; flex:none; }
-  .hand-control-toggle.active{ border-color:var(--gold, #4DA6FF); color:var(--cream, #FFFFFF); box-shadow: var(--glow-primary, 0 0 26px rgba(77,166,255,.45)); }
+  .hand-control-toggle.active{ border-color:var(--gold, #4DA6FF); color:var(--cream, #FFFFFF); box-shadow: var(--glass-shadow, 0 8px 40px rgba(0,0,0,.35)), var(--glow-primary, 0 0 26px rgba(77,166,255,.45)); }
   .hand-control-toggle.pending{ opacity:.6; cursor:wait; }
   @media (max-width:520px){
     .hand-control-toggle{ top:calc(62px + env(safe-area-inset-top)); right:calc(14px + env(safe-area-inset-right)); height:34px; font-size:11px; padding:0 12px 0 10px; }
