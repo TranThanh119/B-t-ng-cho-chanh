@@ -167,7 +167,7 @@ body::after{
 }
 /* ---------- Layer 5: Overlay gradient tối (đảm bảo chữ luôn dễ đọc) ---------- */
 .vignette{
-  position:fixed; inset:0; z-index:2; pointer-events:none;
+  position:fixed; inset:0; z-index:0; pointer-events:none;
   /* Overlay tối để chữ luôn dễ đọc trên nền nebula, nhẹ ở vùng ánh sáng trung tâm
      và đậm dần ra rìa (0.35 → 0.55) theo đúng yêu cầu độ tương phản. */
   background: radial-gradient(ellipse at 50% 42%,
