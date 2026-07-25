@@ -88,11 +88,76 @@ body::after{
   50%{ transform:translate3d(-3%,-3%,0) scale(1.1); opacity:.9; }
 }
 
+/* =====================================================================
+   CINEMATIC NIGHT SKY — hệ thống layer chiều sâu (premium look)
+   Layer 1: Milky Way + Nebula blur   (xa nhất, tĩnh, rất chậm)
+   Layer 2: Tiny stars + twinkle       (.stars-deep ở đây, .stars JS ở dưới)
+   Layer 3: Floating dust / bokeh / particle ánh sáng nhỏ (đã có sẵn)
+   Layer 5: Overlay gradient tối       (.vignette, phía dưới)
+   Layer 7: Radial light giữa màn hình (.bg-glow, phía dưới)
+   Toàn bộ chỉ dùng CSS animation (transform/opacity — GPU composite,
+   không reflow), chu kỳ 20–40s, opacity thấp → không giật, không lag.
+   ===================================================================== */
+
+/* ---------- Layer 1: Milky Way — dải ngân hà mờ chéo qua màn hình ---------- */
+.milkyway{
+  position:fixed; z-index:0; pointer-events:none;
+  inset:-30% -25%;
+  background:
+    linear-gradient(112deg,
+      transparent 26%,
+      rgba(150,140,255,.07) 38%,
+      rgba(215,205,255,.14) 48%,
+      rgba(180,160,255,.10) 56%,
+      transparent 72%),
+    radial-gradient(ellipse 65% 26% at 38% 42%, rgba(160,130,255,.12), transparent 60%),
+    radial-gradient(ellipse 55% 22% at 66% 58%, rgba(120,150,255,.10), transparent 60%);
+  transform: rotate(-24deg);
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  opacity:.6;
+  will-change: transform, opacity;
+  animation: milkywayDrift 42s ease-in-out infinite;
+}
+@keyframes milkywayDrift{
+  0%,100%{ transform: rotate(-24deg) translate3d(0,0,0) scale(1); opacity:.5; }
+  50%{ transform: rotate(-24deg) translate3d(1.2%,-1%,0) scale(1.035); opacity:.68; }
+}
+
+/* ---------- Layer 2 (bổ sung): lớp sao xa, thuần CSS — không thêm DOM node,
+   nên gần như không tốn hiệu năng (chỉ 1 phần tử, tile background, animation
+   chỉ đổi opacity). Lớp .stars (JS, 70 ngôi sao to hơn) nằm phía dưới, gần hơn. */
+.stars-deep{
+  position:fixed; z-index:0; pointer-events:none;
+  inset:-10%;
+  background-image:
+    radial-gradient(1px 1px at 15% 22%, rgba(255,255,255,.9), transparent 100%),
+    radial-gradient(1px 1px at 38% 8%,  rgba(255,255,255,.7), transparent 100%),
+    radial-gradient(1.4px 1.4px at 62% 32%, rgba(220,225,255,.85), transparent 100%),
+    radial-gradient(1px 1px at 82% 12%, rgba(255,255,255,.6), transparent 100%),
+    radial-gradient(1px 1px at 12% 55%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1.3px 1.3px at 46% 68%, rgba(200,210,255,.75), transparent 100%),
+    radial-gradient(1px 1px at 70% 78%, rgba(255,255,255,.65), transparent 100%),
+    radial-gradient(1px 1px at 92% 60%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1.4px 1.4px at 26% 88%, rgba(220,225,255,.7), transparent 100%),
+    radial-gradient(1px 1px at 55% 95%, rgba(255,255,255,.55), transparent 100%);
+  background-repeat: repeat;
+  background-size: 340px 340px;
+  opacity:.45;
+  will-change: opacity;
+  animation: starsDeepTwinkle 26s ease-in-out infinite;
+}
+@keyframes starsDeepTwinkle{
+  0%,100%{ opacity:.3; }
+  50%{ opacity:.55; }
+}
+
 /* ---------- Ambient atmosphere ---------- */
 .grain{
   position:fixed; inset:-10%; z-index:3; pointer-events:none;
   filter:url(#grainFilter); opacity:.35; mix-blend-mode:overlay;
 }
+/* ---------- Layer 5: Overlay gradient tối (đảm bảo chữ luôn dễ đọc) ---------- */
 .vignette{
   position:fixed; inset:0; z-index:2; pointer-events:none;
   /* Overlay tối để chữ luôn dễ đọc trên nền nebula, nhẹ ở vùng ánh sáng trung tâm
@@ -102,6 +167,7 @@ body::after{
       rgba(5,15,35,.42) 45%,
       var(--night-overlay-strong) 100%);
 }
+/* ---------- Layer 3: Floating dust / bokeh / particle ánh sáng nhỏ ---------- */
 .bokeh{ position:fixed; inset:0; z-index:0; pointer-events:none; will-change:transform; }
 .bokeh span{
   position:absolute; background-repeat:no-repeat; background-position:center; background-size:contain;
@@ -122,6 +188,7 @@ body::after{
    Nếu tắt file JS, class không được thêm và .bokeh span dùng lại animation drift gốc phía trên. */
 .bokeh.js-anim span{ animation:none; will-change:transform, opacity; }
 
+/* ---------- Layer 2: Tiny stars (JS, to hơn .stars-deep) + twinkle ---------- */
 .stars{
   position:fixed; inset:0; z-index:0; pointer-events:none; will-change:transform;
 }
@@ -133,12 +200,13 @@ body::after{
 @keyframes twinkle{ 0%,100%{opacity:.15;} 50%{opacity:.95;} }
 
 /* ---------- Glow nền đổi chậm ---------- */
+/* ---------- Layer 7: Radial light ở giữa màn hình — glow trung tâm chậm rãi ---------- */
 .bg-glow{
   position:fixed; inset:-15%; z-index:0; pointer-events:none;
   /* Quầng sáng huyền ảo toả ra từ trung tâm màn hình — điểm nhấn "cinematic" */
-  background: radial-gradient(circle at 50% 40%, rgba(172,150,255,.22), rgba(172,150,255,0) 62%),
-              radial-gradient(circle at 30% 74%, rgba(96,116,232,.14), rgba(96,116,232,0) 55%);
-  opacity:.5; mix-blend-mode:screen;
+  background: radial-gradient(circle at 50% 40%, rgba(172,150,255,.24), rgba(172,150,255,0) 60%),
+              radial-gradient(circle at 30% 74%, rgba(96,116,232,.15), rgba(96,116,232,0) 55%);
+  opacity:.55; mix-blend-mode:screen;
   transform: var(--glow-parallax, translate3d(0,0,0));
 }
 .bg-glow.is-active{ animation: glowPulse 22s ease-in-out infinite; }
