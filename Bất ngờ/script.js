@@ -18,20 +18,20 @@ for(let i=0;i<70;i++){
   starsEl.appendChild(s);
 }
 
-// ---- Bokeh trôi nhẹ trong nền: hoa cẩm tú cầu + quả chanh ----
+// ---- Bokeh trôi nhẹ trong nền: hạt sao/bụi ngân hà (đã thay thế hoa cẩm tú cầu + quả chanh) ----
 const bokehEl = document.getElementById('bokeh');
 const BOKEH_ITEMS = [
-  // 'flower' = hoa cẩm tú cầu (to hơn), 'lemon' = quả chanh (nhỏ hơn)
-  { kind: 'flower', size: 150 }, { kind: 'lemon',  size: 62 },
-  { kind: 'flower', size: 110 }, { kind: 'lemon',  size: 78 },
-  { kind: 'flower', size: 170 }, { kind: 'lemon',  size: 56 },
-  { kind: 'flower', size: 95 },  { kind: 'lemon',  size: 70 },
-  { kind: 'flower', size: 130 }, { kind: 'lemon',  size: 64 },
-  { kind: 'flower', size: 105 }, { kind: 'lemon',  size: 80 },
+  // 'star' = đốm sáng to mờ (giả lập ngôi sao gần), 'dust' = hạt bụi tinh vân nhỏ hơn
+  { kind: 'star', size: 46 }, { kind: 'dust', size: 20 },
+  { kind: 'star', size: 34 }, { kind: 'dust', size: 26 },
+  { kind: 'star', size: 54 }, { kind: 'dust', size: 18 },
+  { kind: 'star', size: 30 }, { kind: 'dust', size: 22 },
+  { kind: 'star', size: 40 }, { kind: 'dust', size: 20 },
+  { kind: 'star', size: 32 }, { kind: 'dust', size: 24 },
 ];
 BOKEH_ITEMS.forEach(({ kind, size }) => {
   const s = document.createElement('span');
-  s.className = kind === 'flower' ? 'bk-flower' : 'bk-lemon';
+  s.className = kind === 'star' ? 'bk-star' : 'bk-dust';
   s.style.width = size+'px';
   s.style.height = size+'px';
   s.style.left = Math.random()*100+'%';
