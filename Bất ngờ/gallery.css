@@ -50,7 +50,7 @@
 
 /* Ảnh trung tâm: bóng sâu hơn một chút để có cảm giác "nổi" lên hẳn phía trước */
 .cf-slide.cf-center .cf-photo{
-  box-shadow: var(--glass-shadow), 0 0 40px rgba(77,166,255,.18), 0 0 0 1px rgba(125,211,252,.2);
+  box-shadow: var(--glass-shadow), 0 0 40px rgba(110, 110, 146, 0.18), 0 0 0 1px rgba(125,211,252,.2);
 }
 
 /* Hover: nổi lên + zoom nhẹ + tăng blur/shadow theo hệ Glassmorphism
@@ -61,8 +61,8 @@
   backdrop-filter: blur(var(--glass-blur-hover)); -webkit-backdrop-filter: blur(var(--glass-blur-hover));
   box-shadow:
     var(--glass-shadow-hover),
-    0 0 44px rgba(77,166,255,.4),
-    0 0 0 1px rgba(125,211,252,.3);
+    0 0 44px rgba(254, 254, 254, 0.4),
+    0 0 0 1px rgba(249, 247, 247, 0.3);
 }
 
 .cf-photo .placeholder-icon{

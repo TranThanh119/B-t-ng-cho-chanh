@@ -137,7 +137,8 @@
 
         slide.style.transform =
           'translate(-50%,-50%) translateX(' + spacingPct + '%) translateZ(' + z + 'px) rotateY(' + rotate + 'deg) scale(' + scale + ')';
-        slide.style.filter = 'blur(' + blur + 'px) brightness(' + brightness + ')';
+        slide.style.filter =
+          'blur(' + blur + 'px)';
         slide.style.opacity = String(opacity);
         slide.style.zIndex = String(200 - Math.round(absR * 10));
         slide.style.pointerEvents = absR > VISIBLE_RANGE ? 'none' : 'auto';
